@@ -7,9 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.rogowiczdawid.smartnote.MainActivity">
 
-    <include layout="@layout/content_main" />
-
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,5 +20,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
+    <!--Fragment Container-->
+    <include
+        layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>
