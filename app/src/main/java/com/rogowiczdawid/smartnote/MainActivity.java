@@ -37,9 +37,10 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState != null) {
                 return;
             }
-            ToDoFragment firstFragment = new ToDoFragment();
+            GalleryFragment firstFragment = new GalleryFragment();
             firstFragment.setArguments(getIntent().getExtras());
-            getSupportFragmentManager().beginTransaction().add(R.id.content_main, firstFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
+
         }
 
     }
@@ -91,6 +92,12 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
 
         } else if (id == R.id.nav_gallery) {
+            GalleryFragment galleryFragment = new GalleryFragment();
+            galleryFragment.setArguments(getIntent().getExtras());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.main_frame, galleryFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
         } else if (id == R.id.nav_todo) {
             ToDoFragment toDoFragment = new ToDoFragment();

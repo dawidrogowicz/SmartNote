@@ -62,6 +62,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
