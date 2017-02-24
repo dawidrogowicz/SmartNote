@@ -32,8 +32,14 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
     public boolean title_bar_down = true;
     GestureDetectorCompat detector;
-    ArrayList<String> user_list;
     View rootView;
+
+    //////////Variables with data for saving///////////
+    //1 corresponds to "To do note" 0 to "Note"
+    private static final int FRAGMENT_TYPE = 1;
+    private int item_count = 0;
+    private String title_val = "Title";
+    ArrayList<String> user_list;
 
     @Nullable
     @Override
@@ -86,6 +92,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     title.setFocusable(false);
+                    title_val = String.valueOf(title.getText());
                 }
             }
         });
@@ -96,9 +103,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList("user_list", user_list);
-
-        EditText title = (EditText) rootView.findViewById(R.id.title_bar);
-        outState.putString("title", String.valueOf(title.getText()));
+        outState.putString("title", title_val);
     }
 
     ////////////////ADDING ITEMS TO LIST///////////////////
@@ -161,6 +166,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 //delete item from list
                 int index = user_list.indexOf(text);
                 user_list.remove(index);
+                item_count--;
             }
         });
         layout.addView(buttonDel);
@@ -171,6 +177,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         //add line break after Layout
         container.addView(line);
+        item_count++;
     }
 
     ///////////////////GESTURE DETECTION////////////////////
@@ -202,6 +209,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 EditText edit = (EditText) rootView.findViewById(R.id.title_bar);
                 if (String.valueOf(edit.getText()).equals("Title")) {
                     edit.setText(text);
+                    title_val = text;
                 }
             }
         }
@@ -236,5 +244,21 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
+    }
+
+    public int getItemCount() {
+        return item_count;
+    }
+
+    public int getFragmentType() {
+        return FRAGMENT_TYPE;
+    }
+
+    public String getTitleValue() {
+        return title_val;
+    }
+
+    public ArrayList<String> getList() {
+        return user_list;
     }
 }
