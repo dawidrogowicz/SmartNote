@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -62,7 +63,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_save) {
             return true;
         }
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.main_frame, noteFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+//                viewPager.setCurrentItem(1);
 
         } else if (id == R.id.nav_gallery) {
             GalleryFragment galleryFragment = new GalleryFragment();
@@ -98,6 +101,8 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.main_frame, galleryFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+//            viewPager.setCurrentItem(0);
+
 
         } else if (id == R.id.nav_todo) {
             ToDoFragment toDoFragment = new ToDoFragment();
@@ -106,6 +111,8 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.main_frame, toDoFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+//            viewPager.setCurrentItem(2);
+
 
         } else if (id == R.id.nav_manage) {
 
@@ -120,4 +127,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void onSaveInternalStorage() {
+        NoteFragment note_fragment = new NoteFragment();
+    }
 }
