@@ -15,6 +15,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    final static String FRAGMENT_TAG = "MY_FRAGMENT";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,6 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
 
         }
-
     }
 
 
@@ -74,6 +75,17 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_save) {
+
+            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            if (toDoFragment != null && toDoFragment.isVisible()) {
+                if (!FileManager.onSaveToDo(toDoFragment, this)) return false;
+            }
+
+            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            if (noteFragment != null && noteFragment.isVisible()) {
+                if (!FileManager.onSaveNote(noteFragment, this)) return false;
+            }
+
             return true;
         }
 
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity
             NoteFragment noteFragment = new NoteFragment();
             noteFragment.setArguments(getIntent().getExtras());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, noteFragment);
+            transaction.replace(R.id.main_frame, noteFragment, FRAGMENT_TAG);
             transaction.addToBackStack(null);
             transaction.commit();
 //                viewPager.setCurrentItem(1);
@@ -108,7 +120,7 @@ public class MainActivity extends AppCompatActivity
             ToDoFragment toDoFragment = new ToDoFragment();
             toDoFragment.setArguments(getIntent().getExtras());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, toDoFragment);
+            transaction.replace(R.id.main_frame, toDoFragment, FRAGMENT_TAG);
             transaction.addToBackStack(null);
             transaction.commit();
 //            viewPager.setCurrentItem(2);
@@ -127,7 +139,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onSaveInternalStorage() {
-        NoteFragment note_fragment = new NoteFragment();
-    }
 }

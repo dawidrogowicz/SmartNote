@@ -17,11 +17,8 @@ public class NoteFragment extends Fragment {
     View rootView;
 
     //////////Variables with data for saving///////////
-    //1 corresponds to "To do note" 0 to "Note"
-    private static final int FRAGMENT_TYPE = 0;
-    private String title_val = "Title";
     String text_val;
-
+    private String title_val = "Title";
 
     @Nullable
     @Override
@@ -90,15 +87,7 @@ public class NoteFragment extends Fragment {
     }
 
 
-    public int getFragmentType() {
-        return FRAGMENT_TYPE;
-    }
-
     public String getTitleValue() {
         return title_val;
-    }
-
-    public String getTextValue() {
-        return text_val;
     }
 }

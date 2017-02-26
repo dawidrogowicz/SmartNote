@@ -33,13 +33,9 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public boolean title_bar_down = true;
     GestureDetectorCompat detector;
     View rootView;
-
-    //////////Variables with data for saving///////////
-    //1 corresponds to "To do note" 0 to "Note"
-    private static final int FRAGMENT_TYPE = 1;
-    private int item_count = 0;
-    private String title_val = "Title";
     ArrayList<String> user_list;
+    //////////Variables with data for saving///////////
+    private String title_val = "Title";
 
     @Nullable
     @Override
@@ -166,7 +162,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 //delete item from list
                 int index = user_list.indexOf(text);
                 user_list.remove(index);
-                item_count--;
             }
         });
         layout.addView(buttonDel);
@@ -177,7 +172,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         //add line break after Layout
         container.addView(line);
-        item_count++;
     }
 
     ///////////////////GESTURE DETECTION////////////////////
@@ -215,6 +209,10 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public String getTitleValue() {
+        return title_val;
+    }
+
     private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
         @Override
@@ -244,21 +242,5 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
-    }
-
-    public int getItemCount() {
-        return item_count;
-    }
-
-    public int getFragmentType() {
-        return FRAGMENT_TYPE;
-    }
-
-    public String getTitleValue() {
-        return title_val;
-    }
-
-    public ArrayList<String> getList() {
-        return user_list;
     }
 }
