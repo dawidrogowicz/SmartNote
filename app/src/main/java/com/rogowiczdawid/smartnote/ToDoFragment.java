@@ -37,6 +37,17 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     //////////Variables with data for saving///////////
     private String title_val = "Title";
 
+    public static ToDoFragment newInstance(String title, ArrayList<String> list) {
+
+        Bundle args = new Bundle();
+        args.putString("TITLE", title);
+        args.putStringArrayList("LIST", list);
+
+        ToDoFragment fragment = new ToDoFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,13 +68,25 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             }
         }
 
+        if (getArguments() != null) {
+            title_val = getArguments().getString("TITLE");
+            EditText title = (EditText) rootView.findViewById(R.id.title_bar);
+            title.setText(title_val);
+
+            int size = getArguments().getStringArrayList("LIST").size();
+
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    createLayout(getArguments().getStringArrayList("LIST").get(i));
+                }
+            }
+        }
 
         Button add_button = (Button) rootView.findViewById(R.id.add_button);
         add_button.setOnClickListener(this);
 
         return rootView;
     }
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -102,8 +125,24 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         outState.putString("title", title_val);
     }
 
+    ///////////////////GESTURE DETECTION////////////////////
+//            @Override
+//            public boolean dispatchTouchEvent(MotionEvent ev) {
+//
+//                boolean handled = super.dispatchTouchEvent(ev);
+//                handled = detector.onTouchEvent(ev);
+//                return handled;
+//            }
+//
+//            @Override
+//            public boolean onTouchEvent(MotionEvent event) {
+//                this.detector.onTouchEvent(event);
+//                return super.onTouchEvent(event);
+//            }
+
     ////////////////ADDING ITEMS TO LIST///////////////////
     public void createLayout(final String text) {
+        user_list.add(text);
 
         //Adding new horizontal Layout with RelativeLayout inside
         final LinearLayout layout = new LinearLayout(getActivity());
@@ -174,21 +213,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         container.addView(line);
     }
 
-    ///////////////////GESTURE DETECTION////////////////////
-//            @Override
-//            public boolean dispatchTouchEvent(MotionEvent ev) {
-//
-//                boolean handled = super.dispatchTouchEvent(ev);
-//                handled = detector.onTouchEvent(ev);
-//                return handled;
-//            }
-//
-//            @Override
-//            public boolean onTouchEvent(MotionEvent event) {
-//                this.detector.onTouchEvent(event);
-//                return super.onTouchEvent(event);
-//            }
-
     @Override
     public void onClick(View view) {
         AutoCompleteTextView editTextView = (AutoCompleteTextView) rootView.findViewById(R.id.getTextView);
@@ -197,7 +221,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 String text = String.valueOf(editTextView.getText());
                 editTextView.setText("");
                 createLayout(text);
-                user_list.add(text);
 
                 //Change title to first added item
                 EditText edit = (EditText) rootView.findViewById(R.id.title_bar);
@@ -211,6 +234,10 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
     public String getTitleValue() {
         return title_val;
+    }
+
+    public ArrayList<String> getUserList() {
+        return user_list;
     }
 
     private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {

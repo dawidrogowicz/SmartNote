@@ -10,14 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    final static String FRAGMENT_TAG = "MY_FRAGMENT";
+    final static String NOTE = "NOTE_FRAGMENT";
+    final static String TODO = "TO_DO_FRAGMENT";
 
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -46,8 +48,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -57,33 +57,45 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete) {
+
+
             return true;
         } else if (id == R.id.action_save) {
 
-            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
-                if (!FileManager.onSaveToDo(toDoFragment, this)) return false;
+                if (FileManager.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this)) {
+                    Toast toast = Toast.makeText(this, "File saved :3 - ToDo", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(this, "Something went wrong ;c - ToDo", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return false;
+                }
             }
 
-            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
             if (noteFragment != null && noteFragment.isVisible()) {
-                if (!FileManager.onSaveNote(noteFragment, this)) return false;
+                if (FileManager.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this)) {
+                    Toast toast = Toast.makeText(this, "File saved :3 - Note", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(this, "Something went wrong ;c - Note", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return false;
+                }
             }
 
             return true;
@@ -92,8 +104,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -101,10 +111,9 @@ public class MainActivity extends AppCompatActivity
             NoteFragment noteFragment = new NoteFragment();
             noteFragment.setArguments(getIntent().getExtras());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, noteFragment, FRAGMENT_TAG);
+            transaction.replace(R.id.main_frame, noteFragment, NOTE);
             transaction.addToBackStack(null);
             transaction.commit();
-//                viewPager.setCurrentItem(1);
 
         } else if (id == R.id.nav_gallery) {
             GalleryFragment galleryFragment = new GalleryFragment();
@@ -113,18 +122,14 @@ public class MainActivity extends AppCompatActivity
             transaction.replace(R.id.main_frame, galleryFragment);
             transaction.addToBackStack(null);
             transaction.commit();
-//            viewPager.setCurrentItem(0);
-
 
         } else if (id == R.id.nav_todo) {
             ToDoFragment toDoFragment = new ToDoFragment();
             toDoFragment.setArguments(getIntent().getExtras());
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, toDoFragment, FRAGMENT_TAG);
+            transaction.replace(R.id.main_frame, toDoFragment, TODO);
             transaction.addToBackStack(null);
             transaction.commit();
-//            viewPager.setCurrentItem(2);
-
 
         } else if (id == R.id.nav_manage) {
 

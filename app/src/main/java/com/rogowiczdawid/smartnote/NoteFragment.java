@@ -17,17 +17,35 @@ public class NoteFragment extends Fragment {
     View rootView;
 
     //////////Variables with data for saving///////////
-    String text_val;
+    private String text_val;
     private String title_val = "Title";
 
-    @Nullable
-    @Override
+    public static NoteFragment newInstance(String title, String text) {
+
+        Bundle args = new Bundle();
+        args.putString("TITLE", title);
+        args.putString("TEXT", text);
+
+        NoteFragment fragment = new NoteFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.note_fragment, container, false);
 
         final EditText title = (EditText) rootView.findViewById(R.id.note_title_bar);
-
         final MultiAutoCompleteTextView editText = (MultiAutoCompleteTextView) rootView.findViewById(R.id.note_text);
+
+        if (getArguments() != null) {
+            title_val = getArguments().getString("TITLE");
+            text_val = getArguments().getString("TEXT");
+
+            title.setText(title_val);
+            editText.setText(text_val);
+        }
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -59,7 +77,6 @@ public class NoteFragment extends Fragment {
         return rootView;
     }
 
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -86,8 +103,11 @@ public class NoteFragment extends Fragment {
         });
     }
 
-
     public String getTitleValue() {
         return title_val;
+    }
+
+    public String getTextVal() {
+        return text_val;
     }
 }
