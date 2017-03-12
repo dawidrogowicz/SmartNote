@@ -70,6 +70,23 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
 
+            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
+            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
+
+            if (toDoFragment != null && toDoFragment.isVisible()) {
+
+                if (FileManager.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext()))
+
+                    Toast.makeText(this, "File deleted succesfully!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Couldn't delete file", Toast.LENGTH_SHORT).show();
+            } else if (noteFragment != null && noteFragment.isVisible()) {
+
+                if (FileManager.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext()))
+                    Toast.makeText(this, "File deleted succesfully!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Couldn't delete file", Toast.LENGTH_SHORT).show();
+            }
 
             return true;
         } else if (id == R.id.action_save) {

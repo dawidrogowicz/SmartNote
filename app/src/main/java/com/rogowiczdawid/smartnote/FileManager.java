@@ -73,4 +73,12 @@ public final class FileManager {
         return true;
     }
 
+    public static boolean onDeleteNote(String filename, Context context) {
+
+        File dir = context.getFilesDir();
+        File f = new File(dir, filename + "Note");
+
+        return f.delete();
+    }
+
 }
