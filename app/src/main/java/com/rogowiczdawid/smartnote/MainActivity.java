@@ -1,11 +1,14 @@
 package com.rogowiczdawid.smartnote;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -70,47 +73,69 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
 
-            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
-            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
+            //Check if button was pressed in the right fragment
+            final ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
+            final NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
 
-            if (toDoFragment != null && toDoFragment.isVisible()) {
+            if ((toDoFragment != null && toDoFragment.isVisible()) || (noteFragment != null && noteFragment.isVisible())) {
 
-                if (FileManager.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext()))
+                //Create AlertDialog so the user won't accidentally delete file
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.delete_note);
+                builder.setMessage(R.string.you_wont_be_able);
+                builder.setNegativeButton(R.string.no, null);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                    Toast.makeText(this, "File deleted succesfully!", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "Couldn't delete file", Toast.LENGTH_SHORT).show();
-            } else if (noteFragment != null && noteFragment.isVisible()) {
+                        //Prepare transaction to gallery fragment after deleting file
+                        GalleryFragment galleryFragment = new GalleryFragment();
+                        galleryFragment.setArguments(getIntent().getExtras());
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.main_frame, galleryFragment);
+                        transaction.addToBackStack(null);
 
-                if (FileManager.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext()))
-                    Toast.makeText(this, "File deleted succesfully!", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "Couldn't delete file", Toast.LENGTH_SHORT).show();
+                        if (toDoFragment != null) {
+
+                            if (FileManager.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
+                                transaction.commit();
+                                Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            if (FileManager.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
+                                transaction.commit();
+                                Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.create().show();
             }
 
             return true;
+
         } else if (id == R.id.action_save) {
 
             ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
-                if (FileManager.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this)) {
-                    Toast toast = Toast.makeText(this, "File saved :3 - ToDo", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    Toast toast = Toast.makeText(this, "Something went wrong ;c - ToDo", Toast.LENGTH_SHORT);
-                    toast.show();
+                if (FileManager.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this))
+                    Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
 
             NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
             if (noteFragment != null && noteFragment.isVisible()) {
-                if (FileManager.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this)) {
-                    Toast toast = Toast.makeText(this, "File saved :3 - Note", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    Toast toast = Toast.makeText(this, "Something went wrong ;c - Note", Toast.LENGTH_SHORT);
-                    toast.show();
+                if (FileManager.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this))
+                    Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
@@ -121,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_note) {

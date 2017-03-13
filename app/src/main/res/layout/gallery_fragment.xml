@@ -25,6 +25,12 @@
         android:layout_marginRight="16dp"
         android:clickable="true"
         app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <include
+        layout="@layout/fab_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>
