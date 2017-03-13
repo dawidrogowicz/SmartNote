@@ -95,14 +95,14 @@ public class MainActivity extends AppCompatActivity
                         transaction.replace(R.id.main_frame, galleryFragment);
                         transaction.addToBackStack(null);
 
-                        if (toDoFragment != null) {
+                        if (toDoFragment != null && toDoFragment.isVisible()) {
 
                             if (FileManager.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
                                 transaction.commit();
                                 Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
                             } else
                                 Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
-                        } else {
+                        } else if (noteFragment != null && noteFragment.isVisible()) {
 
                             if (FileManager.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
                                 transaction.commit();
