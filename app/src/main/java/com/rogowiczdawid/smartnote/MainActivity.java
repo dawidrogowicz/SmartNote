@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,12 +17,22 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
 
+    public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
+
+
+        if (tag != null) transaction.replace(R.id.main_frame, fragment, tag);
+        else transaction.replace(R.id.main_frame, fragment);
+
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +40,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -149,41 +158,18 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_note) {
-            NoteFragment noteFragment = new NoteFragment();
-            noteFragment.setArguments(getIntent().getExtras());
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, noteFragment, NOTE);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-        } else if (id == R.id.nav_gallery) {
-            GalleryFragment galleryFragment = new GalleryFragment();
-            galleryFragment.setArguments(getIntent().getExtras());
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, galleryFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-        } else if (id == R.id.nav_todo) {
-            ToDoFragment toDoFragment = new ToDoFragment();
-            toDoFragment.setArguments(getIntent().getExtras());
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frame, toDoFragment, TODO);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+        if (id == R.id.nav_note)
+            replaceFragment(new NoteFragment(), NOTE, getSupportFragmentManager().beginTransaction());
+        else if (id == R.id.nav_gallery)
+            replaceFragment(new GalleryFragment(), null, getSupportFragmentManager().beginTransaction());
+        else if (id == R.id.nav_todo)
+            replaceFragment(new ToDoFragment(), TODO, getSupportFragmentManager().beginTransaction());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+
 }
+

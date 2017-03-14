@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,12 @@ import java.util.ArrayList;
 public class GalleryFragment extends Fragment {
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
+    public static boolean fab_visible;
     View rootView;
     ListView mainContainer;
     FloatingActionButton fabMain;
     FloatingActionButton fabNote;
     FloatingActionButton fabTodo;
-    boolean fab_visible = false;
 
     @Nullable
     @Override
@@ -37,7 +36,7 @@ public class GalleryFragment extends Fragment {
         fabMain = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton);
         fabNote = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonNote);
         fabTodo = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonTodo);
-
+        fab_visible = false;
 
         //Display or hide additional floating buttons
         fabMain.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -45,10 +44,10 @@ public class GalleryFragment extends Fragment {
             public void onClick(View view) {
                 if (fab_visible) {
                     hideFabMenu();
-                    fab_visible = !fab_visible;
+                    fab_visible = false;
                 } else {
                     displayFabMenu();
-                    fab_visible = !fab_visible;
+                    fab_visible = true;
                 }
             }
         });
@@ -57,11 +56,7 @@ public class GalleryFragment extends Fragment {
         fabNote.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NoteFragment noteFragment = new NoteFragment();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_frame, noteFragment, NOTE);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                MainActivity.replaceFragment(new NoteFragment(), NOTE, getActivity().getSupportFragmentManager().beginTransaction());
 
                 Toast.makeText(getContext(), R.string.new_note, Toast.LENGTH_SHORT).show();
             }
@@ -71,11 +66,7 @@ public class GalleryFragment extends Fragment {
         fabTodo.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToDoFragment toDoFragment = new ToDoFragment();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_frame, toDoFragment, TODO);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                MainActivity.replaceFragment(new ToDoFragment(), TODO, getActivity().getSupportFragmentManager().beginTransaction());
 
                 Toast.makeText(getContext(), R.string.new_todo, Toast.LENGTH_SHORT).show();
             }

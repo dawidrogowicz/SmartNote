@@ -31,9 +31,11 @@ import java.util.Objects;
 public class ToDoFragment extends Fragment implements View.OnClickListener {
 
     public boolean title_bar_down = true;
-    GestureDetectorCompat detector;
     View rootView;
+    EditText title;
+    GestureDetectorCompat mDetector;
     ArrayList<String> user_list;
+
     //////////Variables with data for saving///////////
     private String title_val = "Title";
 
@@ -53,8 +55,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.to_do_list_fragment, container, false);
-
-        detector = new GestureDetectorCompat(getActivity(), new ToDoFragment.MyGestureDetector());
+        title = (EditText) rootView.findViewById(R.id.title_bar);
 
         //restoring savedInstanceState
         user_list = new ArrayList<>();
@@ -70,7 +71,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         if (getArguments() != null) {
             title_val = getArguments().getString("TITLE");
-            EditText title = (EditText) rootView.findViewById(R.id.title_bar);
             title.setText(title_val);
 
             int size = getArguments().getStringArrayList("LIST").size();
@@ -82,6 +82,8 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             }
         }
 
+//        mDetector = new GestureDetectorCompat(getContext(), new MyGestureListener());
+
         Button add_button = (Button) rootView.findViewById(R.id.add_button);
         add_button.setOnClickListener(this);
 
@@ -92,9 +94,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         //Allow title to be changed after long click
-        final EditText title = (EditText) rootView.findViewById(R.id.title_bar);
         title.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -106,6 +106,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 return true;
             }
         });
+
         title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -124,21 +125,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         outState.putStringArrayList("user_list", user_list);
         outState.putString("title", title_val);
     }
-
-    ///////////////////GESTURE DETECTION////////////////////
-//            @Override
-//            public boolean dispatchTouchEvent(MotionEvent ev) {
-//
-//                boolean handled = super.dispatchTouchEvent(ev);
-//                handled = detector.onTouchEvent(ev);
-//                return handled;
-//            }
-//
-//            @Override
-//            public boolean onTouchEvent(MotionEvent event) {
-//                this.detector.onTouchEvent(event);
-//                return super.onTouchEvent(event);
-//            }
 
     ////////////////ADDING ITEMS TO LIST///////////////////
     public void createLayout(final String text) {
@@ -223,9 +209,8 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
                 createLayout(text);
 
                 //Change title to first added item
-                EditText edit = (EditText) rootView.findViewById(R.id.title_bar);
-                if (String.valueOf(edit.getText()).equals("Title")) {
-                    edit.setText(text);
+                if (String.valueOf(title.getText()).equals("Title")) {
+                    title.setText(text);
                     title_val = text;
                 }
             }
@@ -240,34 +225,47 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         return user_list;
     }
 
-    private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
-
+    private class MyGestureListener implements GestureDetector.OnGestureListener {
         @Override
-        public boolean onDown(MotionEvent e) {
-            Log.i("MainActivity", "onDown");
-
+        public boolean onDown(MotionEvent motionEvent) {
             return true;
         }
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        public void onShowPress(MotionEvent motionEvent) {
 
-            final EditText title = (EditText) rootView.findViewById(R.id.title_bar);
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
 
             Log.i("MainActivity", "onFling");
 
-            if (title_bar_down && velocityY < -7000) {
+            if (title_bar_down && v1 < -7000) {
                 title.animate().translationY(title.getHeight() * (-1)).setDuration(195).start();
                 title_bar_down = false;
 
-            } else if (!title_bar_down && velocityY > 7000) {
+            } else if (!title_bar_down && v1 > 7000) {
                 title.animate().translationY(title.getHeight() * 5).setDuration(225).start();
                 title_bar_down = true;
 
             }
-
-            return super.onFling(e1, e2, velocityX, velocityY);
+            return true;
         }
-
     }
 }
