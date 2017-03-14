@@ -1,21 +1,16 @@
 package com.rogowiczdawid.smartnote;
 
-import android.content.Context;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,13 +25,11 @@ import java.util.Objects;
 
 public class ToDoFragment extends Fragment implements View.OnClickListener {
 
-    public boolean title_bar_down = true;
+    boolean title_bar_down = true;
     View rootView;
     EditText title;
-    GestureDetectorCompat mDetector;
     ArrayList<String> user_list;
-
-    //////////Variables with data for saving///////////
+    private MyFragmentListener myFragmentListener;
     private String title_val = "Title";
 
     public static ToDoFragment newInstance(String title, ArrayList<String> list) {
@@ -56,15 +49,15 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         rootView = inflater.inflate(R.layout.to_do_list_fragment, container, false);
         title = (EditText) rootView.findViewById(R.id.title_bar);
+        user_list = new ArrayList<>();
 
         //restoring savedInstanceState
-        user_list = new ArrayList<>();
         if (savedInstanceState != null) {
-            user_list = savedInstanceState.getStringArrayList("user_list");
-            if (user_list != null) {
-                int count = user_list.size();
+            ArrayList<String> temp_list = savedInstanceState.getStringArrayList("user_list");
+            if (temp_list != null) {
+                int count = temp_list.size();
                 for (int i = 0; i < count; i++) {
-                    createLayout(user_list.get(i));
+                    createLayout(temp_list.get(i));
                 }
             }
         }
@@ -82,41 +75,32 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-//        mDetector = new GestureDetectorCompat(getContext(), new MyGestureListener());
+        //Setting up custom listeners
+        myFragmentListener = new MyFragmentListener(getActivity()) {
+            @Override
+            public void fling(float v1) {
+                if (title_bar_down && v1 < -7000) {
+                    title.animate().translationY(title.getHeight() * (-1)).setDuration(195).start();
+                    title_bar_down = false;
+                } else if (!title_bar_down && v1 > 7000) {
+                    title.animate().translationY(0).setDuration(225).start();
+                    title_bar_down = true;
+                }
+            }
+        };
 
+        ((MainActivity) getActivity()).addMyOnTouchListener(new MainActivity.MyOnTouchListener() {
+            @Override
+            public void onTouch(MotionEvent ev) {
+                myFragmentListener.onTouch(ev);
+            }
+        });
+
+        //Listener for "add" button
         Button add_button = (Button) rootView.findViewById(R.id.add_button);
         add_button.setOnClickListener(this);
 
         return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        //Allow title to be changed after long click
-        title.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                title.setFocusable(true);
-                title.requestFocusFromTouch();
-
-                InputMethodManager inp = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inp.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
-                return true;
-            }
-        });
-
-        title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!b) {
-                    title.setFocusable(false);
-                    title_val = String.valueOf(title.getText());
-                }
-            }
-        });
-
     }
 
     @Override
@@ -223,49 +207,5 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
     public ArrayList<String> getUserList() {
         return user_list;
-    }
-
-    private class MyGestureListener implements GestureDetector.OnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent motionEvent) {
-            return true;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent motionEvent) {
-
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent motionEvent) {
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-            return false;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent motionEvent) {
-
-        }
-
-        @Override
-        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-
-            Log.i("MainActivity", "onFling");
-
-            if (title_bar_down && v1 < -7000) {
-                title.animate().translationY(title.getHeight() * (-1)).setDuration(195).start();
-                title_bar_down = false;
-
-            } else if (!title_bar_down && v1 > 7000) {
-                title.animate().translationY(title.getHeight() * 5).setDuration(225).start();
-                title_bar_down = true;
-
-            }
-            return true;
-        }
     }
 }

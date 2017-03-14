@@ -3,7 +3,7 @@
     <color name="colorPrimary">#f60</color>
     <color name="colorPrimaryDark">#f40</color>
     <color name="colorAccent">#ec2</color>
-    <color name="text_background">#AAA</color>
+    <color name="text_background">#fff</color>
     <color name="black">#000</color>
 
 </resources>

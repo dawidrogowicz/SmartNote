@@ -14,8 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity
 
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
+    List<MyOnTouchListener> listeners;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
 
@@ -47,6 +51,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
 
         //ADDING FIRST FRAGMENT TO CONTAINER
         if (findViewById(R.id.content_main) != null) {
@@ -170,6 +178,24 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        for (MyOnTouchListener listener : listeners) {
+            listener.onTouch(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
+    public void addMyOnTouchListener(MyOnTouchListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeMyOnTouchListener(MyOnTouchListener listener) {
+        listeners.remove(listener);
+    }
+
+    public interface MyOnTouchListener {
+        void onTouch(MotionEvent ev);
+    }
 }
 
