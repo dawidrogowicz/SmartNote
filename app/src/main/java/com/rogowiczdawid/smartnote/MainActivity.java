@@ -2,7 +2,6 @@ package com.rogowiczdawid.smartnote;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_note)
@@ -188,10 +187,6 @@ public class MainActivity extends AppCompatActivity
 
     public void addMyOnTouchListener(MyOnTouchListener listener) {
         listeners.add(listener);
-    }
-
-    public void removeMyOnTouchListener(MyOnTouchListener listener) {
-        listeners.remove(listener);
     }
 
     public interface MyOnTouchListener {
