@@ -2,6 +2,7 @@ package com.rogowiczdawid.smartnote;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setTheme(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -113,14 +115,14 @@ public class MainActivity extends AppCompatActivity
 
                         if (toDoFragment != null && toDoFragment.isVisible()) {
 
-                            if (FileManager.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
+                            if (Utilities.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
                                 transaction.commit();
                                 Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
                             } else
                                 Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
                         } else if (noteFragment != null && noteFragment.isVisible()) {
 
-                            if (FileManager.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
+                            if (Utilities.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
                                 transaction.commit();
                                 Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
                             } else
@@ -138,31 +140,38 @@ public class MainActivity extends AppCompatActivity
 
             ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
-                if (FileManager.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this))
-                    Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
-                else {
-                    Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+                if (!toDoFragment.getTitleValue().equals("Title")) {
+                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this))
+                        Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+
             }
 
             NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
             if (noteFragment != null && noteFragment.isVisible()) {
-                if (FileManager.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this))
-                    Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
-                else {
-                    Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+                if (!noteFragment.getTitleValue().equals("Title")) {
+                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this))
+                        Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
             }
 
             return true;
+        } else if (id == R.id.action_change_color) {
+            Utilities.changeTheme(this);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_note)
@@ -189,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         listeners.add(listener);
     }
 
-    public interface MyOnTouchListener {
+    interface MyOnTouchListener {
         void onTouch(MotionEvent ev);
     }
 }

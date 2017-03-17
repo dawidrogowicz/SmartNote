@@ -4,15 +4,15 @@ import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class MyFragmentListener {
+class MyFragmentListener {
 
     private final GestureDetector gestureDetector;
 
-    public MyFragmentListener(Context ctx) {
+    MyFragmentListener(Context ctx) {
         gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
-    public void onTouch(MotionEvent ev) {
+    void onTouch(MotionEvent ev) {
         gestureDetector.onTouchEvent(ev);
     }
 

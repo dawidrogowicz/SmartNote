@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -63,17 +65,36 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         }
 
         if (getArguments() != null) {
-            title_val = getArguments().getString("TITLE");
-            title.setText(title_val);
+            if (user_list.size() < 1) {
+                title_val = getArguments().getString("TITLE");
+                title.setText(title_val);
 
-            int size = getArguments().getStringArrayList("LIST").size();
+                int size = getArguments().getStringArrayList("LIST").size();
 
-            if (size > 0) {
-                for (int i = 0; i < size; i++) {
-                    createLayout(getArguments().getStringArrayList("LIST").get(i));
+                if (size > 0) {
+                    for (int i = 0; i < size; i++) {
+                        createLayout(getArguments().getStringArrayList("LIST").get(i));
+                    }
                 }
             }
         }
+
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                title_val = String.valueOf(title.getText());
+            }
+        });
 
         //Setting up custom listeners
         myFragmentListener = new MyFragmentListener(getActivity()) {

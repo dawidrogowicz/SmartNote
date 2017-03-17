@@ -3,10 +3,6 @@ package com.rogowiczdawid.smartnote;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * Created by Dawid on 2017-03-04.
- */
-
 class Note implements Serializable {
 
     private String title;
@@ -38,7 +34,7 @@ class Note implements Serializable {
         return text;
     }
 
-    public ArrayList<String> getList() {
+    ArrayList<String> getList() {
         return list;
     }
 }

@@ -31,12 +31,12 @@ public class GalleryFragment extends Fragment {
         rootView = inflater.inflate(R.layout.gallery_fragment, container, false);
         mainContainer = (ListView) rootView.findViewById(R.id.gallery_container);
 
-        updateList();
-
         fabMain = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton);
         fabNote = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonNote);
         fabTodo = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonTodo);
         fab_visible = false;
+
+        updateList();
 
         //Display or hide additional floating buttons
         fabMain.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -72,22 +72,15 @@ public class GalleryFragment extends Fragment {
             }
         });
 
-
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     public void updateList() {
-        ArrayList<Note> notes = FileManager.getNotes(getActivity());
+        ArrayList<Note> notes = Utilities.getNotes(getActivity());
 
         if (notes != null && notes.size() > 0)
             mainContainer.setAdapter(new ListAdapter(getContext(), R.layout.list_item, notes));
-        else Toast.makeText(getContext(), "There's no saved notes", Toast.LENGTH_SHORT).show();
-
+        else Toast.makeText(getContext(), "There are no saved notes", Toast.LENGTH_SHORT).show();
     }
 
     public void displayFabMenu() {

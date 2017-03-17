@@ -16,12 +16,12 @@ import android.widget.TextView;
 import java.util.List;
 
 
-public class ListAdapter extends ArrayAdapter<Note> {
+class ListAdapter extends ArrayAdapter<Note> {
 
-    final static String NOTE = "NOTE_FRAGMENT";
-    final static String TODO = "TO_DO_FRAGMENT";
+    private final static String NOTE = "NOTE_FRAGMENT";
+    private final static String TODO = "TO_DO_FRAGMENT";
 
-    public ListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Note> objects) {
+    ListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Note> objects) {
         super(context, resource, objects);
     }
 

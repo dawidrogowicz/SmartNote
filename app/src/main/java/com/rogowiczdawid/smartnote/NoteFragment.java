@@ -67,6 +67,23 @@ public class NoteFragment extends Fragment {
             }
         });
 
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                title_val = String.valueOf(title.getText());
+            }
+        });
+
         //change default title to first typed word if it wasn't changed before
         editText.addTextChangedListener(new TextWatcher() {
             @Override

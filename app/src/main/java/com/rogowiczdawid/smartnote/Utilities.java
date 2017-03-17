@@ -1,6 +1,8 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.File;
@@ -12,9 +14,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public final class FileManager {
+final class Utilities {
 
-    public static ArrayList<Note> getNotes(Context context) {
+    private static boolean purple = false;
+
+    static ArrayList<Note> getNotes(Context context) {
         ArrayList<String> note_list = new ArrayList<>();
         ArrayList<Note> notes = new ArrayList<>();
 
@@ -47,7 +51,7 @@ public final class FileManager {
         return notes;
     }
 
-    public static boolean onSaveNote(Note note, Context context) {
+    static boolean onSaveNote(Note note, Context context) {
         String title = note.getTitle();
 
         FileOutputStream fileOutputStream;
@@ -73,12 +77,23 @@ public final class FileManager {
         return true;
     }
 
-    public static boolean onDeleteNote(String filename, Context context) {
+    static boolean onDeleteNote(String filename, Context context) {
 
         File dir = context.getFilesDir();
         File f = new File(dir, filename + "Note");
 
         return f.delete();
+    }
+
+    static void changeTheme(Activity activity) {
+        activity.finish();
+        activity.startActivity(new Intent(activity, activity.getClass()));
+        purple = !purple;
+    }
+
+    static void setTheme(Activity activity) {
+        if (!purple) activity.setTheme(R.style.AppTheme_NoActionBar);
+        else activity.setTheme(R.style.PurpleTheme_NoActionBar);
     }
 
 }
