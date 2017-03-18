@@ -12,12 +12,34 @@
         <item name="colorAccent">#FFEA00</item>
     </style>
 
+    <style name="BlueTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#FF4081</item>
+    </style>
+
+    <style name="LimeTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#CDDC39</item>
+        <item name="colorPrimaryDark">#9E9D24</item>
+        <item name="colorAccent">#00E5FF</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="PurpleTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="BlueTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="LimeTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -29,5 +51,13 @@
     <style name="PurpleTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="PurpleTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="BlueTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="BlueTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="LimeTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="LimeTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -15,6 +15,7 @@
         android:selectAllOnFocus="true"
         android:text="@string/title"
         android:textAlignment="center"
+        android:textColor="#8F000000"
         android:textSize="24sp" />
 
     <ScrollView

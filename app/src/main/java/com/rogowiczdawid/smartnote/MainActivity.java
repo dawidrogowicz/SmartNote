@@ -26,14 +26,12 @@ public class MainActivity extends AppCompatActivity
 
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
+    final static String GALLERY = "GALLERY_FRAGMENT";
+    final static String SETTINGS = "SETTINGS_FRAGMENT";
     List<MyOnTouchListener> listeners;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
-
-
-        if (tag != null) transaction.replace(R.id.main_frame, fragment, tag);
-        else transaction.replace(R.id.main_frame, fragment);
-
+        transaction.replace(R.id.main_frame, fragment, tag);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -164,8 +162,6 @@ public class MainActivity extends AppCompatActivity
             }
 
             return true;
-        } else if (id == R.id.action_change_color) {
-            Utilities.changeTheme(this);
         }
 
         return super.onOptionsItemSelected(item);
@@ -174,19 +170,26 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_note)
-            replaceFragment(new NoteFragment(), NOTE, getSupportFragmentManager().beginTransaction());
-        else if (id == R.id.nav_gallery)
-            replaceFragment(new GalleryFragment(), null, getSupportFragmentManager().beginTransaction());
-        else if (id == R.id.nav_todo)
-            replaceFragment(new ToDoFragment(), TODO, getSupportFragmentManager().beginTransaction());
+        switch (id) {
+            case R.id.nav_gallery:
+                replaceFragment(new GalleryFragment(), GALLERY, getSupportFragmentManager().beginTransaction());
+                break;
+            case R.id.nav_todo:
+                replaceFragment(new ToDoFragment(), TODO, getSupportFragmentManager().beginTransaction());
+                break;
+            case R.id.nav_note:
+                replaceFragment(new NoteFragment(), NOTE, getSupportFragmentManager().beginTransaction());
+                break;
+            case R.id.nav_settings:
+                getFragmentManager().beginTransaction().replace(R.id.main_frame, new SettingsFragment(), SETTINGS).addToBackStack(null).commit();
+                break;
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         for (MyOnTouchListener listener : listeners) {
             listener.onTouch(ev);
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity
     public void addMyOnTouchListener(MyOnTouchListener listener) {
         listeners.add(listener);
     }
+
 
     interface MyOnTouchListener {
         void onTouch(MotionEvent ev);

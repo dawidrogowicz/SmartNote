@@ -17,6 +17,7 @@
     <string name="you_wont_be_able">You won\'t be able to use it never again :(</string>
     <string name="no">NO</string>
     <string name="yes">YES</string>
+    <string name="apptheme">AppTheme</string>
     <string name="wrong_note">Something went wrong ;c - Note</string>
     <string name="wrong_todo">Something went wrong ;c - ToDo</string>
     <string name="saved_todo">File saved :3 - ToDo</string>
@@ -24,4 +25,11 @@
     <string name="new_note">New note</string>
     <string name="new_todo">New to-do list</string>
     <string name="set_title">Please, set your title first :)</string>
+    <string name="gallery">Gallery</string>
+    <string name="note">Note</string>
+    <string name="to_do_list">To Do List</string>
+    <string name="communicate">Communicate</string>
+    <string name="share">Share</string>
+    <string name="send">Send</string>
+    <string name="set_color_scheme">Set color scheme for the application</string>
 </resources>

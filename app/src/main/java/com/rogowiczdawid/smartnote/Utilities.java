@@ -2,7 +2,8 @@ package com.rogowiczdawid.smartnote;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
@@ -15,8 +16,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 final class Utilities {
-
-    private static boolean purple = false;
 
     static ArrayList<Note> getNotes(Context context) {
         ArrayList<String> note_list = new ArrayList<>();
@@ -85,15 +84,24 @@ final class Utilities {
         return f.delete();
     }
 
-    static void changeTheme(Activity activity) {
-        activity.finish();
-        activity.startActivity(new Intent(activity, activity.getClass()));
-        purple = !purple;
-    }
-
     static void setTheme(Activity activity) {
-        if (!purple) activity.setTheme(R.style.AppTheme_NoActionBar);
-        else activity.setTheme(R.style.PurpleTheme_NoActionBar);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        String theme = preferences.getString(SettingsFragment.THEME_KEY, "");
+
+        switch (theme) {
+            case "AppTheme_NoActionBar":
+                activity.setTheme(R.style.AppTheme_NoActionBar);
+                break;
+            case "PurpleTheme_NoActionBar":
+                activity.setTheme(R.style.PurpleTheme_NoActionBar);
+                break;
+            case "BlueTheme_NoActionBar":
+                activity.setTheme(R.style.BlueTheme_NoActionBar);
+                break;
+            case "LimeTheme_NoActionBar":
+                activity.setTheme(R.style.LimeTheme_NoActionBar);
+                break;
+        }
     }
 
 }

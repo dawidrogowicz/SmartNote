@@ -57,7 +57,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MainActivity.replaceFragment(new NoteFragment(), NOTE, getActivity().getSupportFragmentManager().beginTransaction());
-
                 Toast.makeText(getContext(), R.string.new_note, Toast.LENGTH_SHORT).show();
             }
         });
@@ -67,7 +66,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MainActivity.replaceFragment(new ToDoFragment(), TODO, getActivity().getSupportFragmentManager().beginTransaction());
-
                 Toast.makeText(getContext(), R.string.new_todo, Toast.LENGTH_SHORT).show();
             }
         });
