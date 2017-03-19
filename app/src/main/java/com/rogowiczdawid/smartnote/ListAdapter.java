@@ -37,9 +37,11 @@ class ListAdapter extends ArrayAdapter<Note> {
         if (note != null) {
             TextView title = (TextView) convertView.findViewById(R.id.item_title);
             TextView text = (TextView) convertView.findViewById(R.id.item_text);
+            TextView date = (TextView) convertView.findViewById(R.id.item_date);
 
             title.setText(note.getTitle());
             text.setText(note.getText());
+            date.setText(note.getDate());
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -48,10 +50,10 @@ class ListAdapter extends ArrayAdapter<Note> {
                     String FRAGMENT_TEMPORARY_TAG;
 
                     if (note.getUserList() == null) {
-                        fragment = NoteFragment.newInstance(note.getTitle(), note.getText());
+                        fragment = NoteFragment.newInstance(note.getTitle(), note.getText(), note.getDate());
                         FRAGMENT_TEMPORARY_TAG = NOTE;
                     } else {
-                        fragment = ToDoFragment.newInstance(note.getTitle(), note.getUserList(), note.getCheckboxStateList());
+                        fragment = ToDoFragment.newInstance(note.getTitle(), note.getUserList(), note.getCheckboxStateList(), note.getDate());
                         FRAGMENT_TEMPORARY_TAG = TODO;
                     }
 

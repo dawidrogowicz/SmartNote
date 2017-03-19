@@ -18,14 +18,16 @@ public class NoteFragment extends Fragment {
     boolean title_bar_down = true;
     private String text_val;
     private String title_val = "Title";
+    private String date;
     private MyFragmentListener myFragmentListener;
 
 
-    public static NoteFragment newInstance(String title, String text) {
+    public static NoteFragment newInstance(String title, String text, String date_arg) {
 
         Bundle args = new Bundle();
         args.putString("TITLE", title);
         args.putString("TEXT", text);
+        args.putString("DATE", date_arg);
 
         NoteFragment fragment = new NoteFragment();
         fragment.setArguments(args);
@@ -41,6 +43,7 @@ public class NoteFragment extends Fragment {
         if (getArguments() != null) {
             title_val = getArguments().getString("TITLE");
             text_val = getArguments().getString("TEXT");
+            date = getArguments().getString("DATE");
 
             title.setText(title_val);
             editText.setText(text_val);

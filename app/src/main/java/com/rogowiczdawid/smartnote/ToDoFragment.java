@@ -33,9 +33,11 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     private MyFragmentListener myFragmentListener;
     private ArrayList<String> user_list;
     private ArrayList<Boolean> checkbox_state_list;
-    private String title_val = "Title";
+    private String title_val;
+    private String date;
 
-    public static ToDoFragment newInstance(String title, ArrayList<String> list, ArrayList<Boolean> checkbox_list) {
+    //Method for instantiating Fragment
+    public static ToDoFragment newInstance(String title, ArrayList<String> list, ArrayList<Boolean> checkbox_list, String date_arg) {
 
         boolean[] checkbox_array = new boolean[checkbox_list.size()];
         for (int i = 0; i < checkbox_list.size(); i++) {
@@ -44,6 +46,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         Bundle args = new Bundle();
         args.putString("TITLE", title);
+        args.putString("DATE", date_arg);
         args.putStringArrayList("LIST", list);
         args.putBooleanArray("CHECKBOX_LIST", checkbox_array);
 
@@ -60,6 +63,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         title = (EditText) rootView.findViewById(R.id.title_bar);
         user_list = new ArrayList<>();
         checkbox_state_list = new ArrayList<>();
+        title_val = "Title";
 
         //restoring savedInstanceState
         if (savedInstanceState != null) {
@@ -78,6 +82,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             if (user_list.size() < 1) {
                 title_val = getArguments().getString("TITLE");
                 title.setText(title_val);
+                date = getArguments().getString("DATE");
                 boolean[] temp_checkbox_state_array = getArguments().getBooleanArray("CHECKBOX_LIST");
                 ArrayList<String> temp_user_list = getArguments().getStringArrayList("LIST");
 
@@ -232,6 +237,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         container.addView(line);
     }
 
+    //OnClick Listener for "Add button"
     @Override
     public void onClick(View view) {
         AutoCompleteTextView editTextView = (AutoCompleteTextView) rootView.findViewById(R.id.getTextView);
@@ -250,6 +256,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    //Getters
     public String getTitleValue() {
         return title_val;
     }
