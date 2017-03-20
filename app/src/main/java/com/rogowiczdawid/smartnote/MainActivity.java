@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity
             ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
                 if (!toDoFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList()), this))
+                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), this))
                         Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
                     else {
                         Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
