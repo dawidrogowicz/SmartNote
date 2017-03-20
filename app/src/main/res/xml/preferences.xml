@@ -9,4 +9,12 @@
         android:summary="@string/set_color_scheme"
         android:title="Theme" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_storage_dir"
+        android:summary="Save your notes and read from SD card"
+        android:switchTextOff="internal"
+        android:switchTextOn="external"
+        android:title="External Storage" />
+
 </PreferenceScreen>

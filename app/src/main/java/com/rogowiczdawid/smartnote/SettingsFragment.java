@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 public class SettingsFragment extends PreferenceFragment {
 
     public final static String THEME_KEY = "pref_key_theme";
+    public final static String EXTERNAL_KEY = "pref_storage_dir";
+
     SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {

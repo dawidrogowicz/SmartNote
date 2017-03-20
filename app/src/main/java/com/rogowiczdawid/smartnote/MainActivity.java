@@ -20,7 +20,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,6 +37,8 @@ public class MainActivity extends AppCompatActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActivityHandler.setActivityWeakReference(this);
         Utilities.setTheme(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
                 if (!toDoFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), this))
+                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
                         Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
                     else {
                         Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity
             NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
             if (noteFragment != null && noteFragment.isVisible()) {
                 if (!noteFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this))
+                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
                         Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
                     else {
                         Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();

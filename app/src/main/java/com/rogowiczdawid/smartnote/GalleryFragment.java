@@ -74,7 +74,7 @@ public class GalleryFragment extends Fragment {
     }
 
     public void updateList() {
-        ArrayList<Note> notes = Utilities.getNotes(getActivity());
+        ArrayList<Note> notes = Utilities.getNotes(getContext());
 
         if (notes != null && notes.size() > 0)
             mainContainer.setAdapter(new ListAdapter(getContext(), R.layout.list_item, notes));
