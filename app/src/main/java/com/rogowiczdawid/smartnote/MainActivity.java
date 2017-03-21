@@ -3,7 +3,9 @@ package com.rogowiczdawid.smartnote;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +41,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         Utilities.setTheme(this);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SettingsFragment.write_to_external = preferences.getBoolean("pref_storage_dir", false);
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
