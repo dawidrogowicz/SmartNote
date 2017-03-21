@@ -27,7 +27,7 @@ final class Utilities {
         File dir = null;
 
         //Search for files that ends with "Note"-(file_const)
-        if (writeToExternal())
+        if (SettingsFragment.write_to_external)
             if (isExternalStorageReadable()) dir = context.getExternalFilesDir(null);
             else
                 Toast.makeText(context, "Unable to access external storage", Toast.LENGTH_SHORT).show();
@@ -71,7 +71,7 @@ final class Utilities {
         File file = null;
 
         //Set directory in external or internal storage
-        if (writeToExternal())
+        if (SettingsFragment.write_to_external)
             if (isExternalStorageWritable())
                 file = new File(context.getExternalFilesDir(null), title);
             else
@@ -102,7 +102,7 @@ final class Utilities {
     static boolean onDeleteNote(String filename, Context context) {
         File dir = null;
 
-        if (writeToExternal())
+        if (SettingsFragment.write_to_external)
             if (isExternalStorageWritable()) dir = context.getExternalFilesDir(null);
             else
                 Toast.makeText(context, "Unable to access external storage", Toast.LENGTH_SHORT).show();
@@ -112,11 +112,6 @@ final class Utilities {
         File f = new File(dir, filename + FILE_CONST);
 
         return f.delete();
-    }
-
-    private static boolean writeToExternal() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ActivityHandler.getActivityReference());
-        return preferences.getBoolean(SettingsFragment.EXTERNAL_KEY, false);
     }
 
     private static boolean isExternalStorageWritable() {

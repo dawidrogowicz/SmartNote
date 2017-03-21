@@ -45,7 +45,7 @@ class Note implements Serializable {
         return text;
     }
 
-    public String getDate() {
+    String getDate() {
         return date;
     }
 

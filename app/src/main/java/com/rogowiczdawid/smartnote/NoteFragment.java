@@ -1,7 +1,7 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -101,13 +101,13 @@ public class NoteFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editText.getText() != null) {
+                if (editText.getText().length() > 1) {
                     text_val = String.valueOf(editText.getText());
                     title_val = String.valueOf(title.getText());
                     if (title_val.equals("Title")) {
                         int index = text_val.length();
                         char last = text_val.charAt(index - 1);
-                        if ((text_val.length() > 5) && (last == ' ')) {
+                        if (index > 5 && last == ' ') {
                             title_val = text_val.substring(0, index);
                             title.setText(title_val);
                         }

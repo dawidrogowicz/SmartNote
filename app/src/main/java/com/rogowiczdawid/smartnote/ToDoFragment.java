@@ -1,10 +1,10 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
