@@ -34,10 +34,9 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> user_list;
     private ArrayList<Boolean> checkbox_state_list;
     private String title_val;
-    private String date;
 
     //Method for instantiating Fragment
-    public static ToDoFragment newInstance(String title, ArrayList<String> list, ArrayList<Boolean> checkbox_list, String date_arg) {
+    public static ToDoFragment newInstance(String title, ArrayList<String> list, ArrayList<Boolean> checkbox_list) {
 
         boolean[] checkbox_array = new boolean[checkbox_list.size()];
         for (int i = 0; i < checkbox_list.size(); i++) {
@@ -46,7 +45,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
         Bundle args = new Bundle();
         args.putString("TITLE", title);
-        args.putString("DATE", date_arg);
         args.putStringArrayList("LIST", list);
         args.putBooleanArray("CHECKBOX_LIST", checkbox_array);
 
@@ -82,7 +80,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             if (user_list.size() < 1) {
                 title_val = getArguments().getString("TITLE");
                 title.setText(title_val);
-                date = getArguments().getString("DATE");
                 boolean[] temp_checkbox_state_array = getArguments().getBooleanArray("CHECKBOX_LIST");
                 ArrayList<String> temp_user_list = getArguments().getStringArrayList("LIST");
 

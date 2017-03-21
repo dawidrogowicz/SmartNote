@@ -50,10 +50,10 @@ class ListAdapter extends ArrayAdapter<Note> {
                     String FRAGMENT_TEMPORARY_TAG;
 
                     if (note.getUserList() == null) {
-                        fragment = NoteFragment.newInstance(note.getTitle(), note.getText(), note.getDate());
+                        fragment = NoteFragment.newInstance(note.getTitle(), note.getText());
                         FRAGMENT_TEMPORARY_TAG = NOTE;
                     } else {
-                        fragment = ToDoFragment.newInstance(note.getTitle(), note.getUserList(), note.getCheckboxStateList(), note.getDate());
+                        fragment = ToDoFragment.newInstance(note.getTitle(), note.getUserList(), note.getCheckboxStateList());
                         FRAGMENT_TEMPORARY_TAG = TODO;
                     }
 

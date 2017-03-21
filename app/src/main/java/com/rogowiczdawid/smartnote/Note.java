@@ -36,7 +36,6 @@ class Note implements Serializable {
         }
     }
 
-
     public String getTitle() {
         return title;
     }
