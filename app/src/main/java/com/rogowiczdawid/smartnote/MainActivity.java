@@ -1,11 +1,13 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +21,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,8 +39,14 @@ public class MainActivity extends AppCompatActivity
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Utilities.setTheme(this);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SettingsFragment.write_to_external = preferences.getBoolean("pref_storage_dir", false);
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity
             }
             GalleryFragment firstFragment = new GalleryFragment();
             firstFragment.setArguments(getIntent().getExtras());
-            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
+            getFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
 
         }
     }
@@ -90,8 +97,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_delete) {
 
             //Check if button was pressed in the right fragment
-            final ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
-            final NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
+            final ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
+            final NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
 
             if ((toDoFragment != null && toDoFragment.isVisible()) || (noteFragment != null && noteFragment.isVisible())) {
 
@@ -107,7 +114,7 @@ public class MainActivity extends AppCompatActivity
                         //Prepare transaction to gallery fragment after deleting file
                         GalleryFragment galleryFragment = new GalleryFragment();
                         galleryFragment.setArguments(getIntent().getExtras());
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         transaction.replace(R.id.main_frame, galleryFragment);
                         transaction.addToBackStack(null);
 
@@ -136,10 +143,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.action_save) {
 
-            ToDoFragment toDoFragment = (ToDoFragment) getSupportFragmentManager().findFragmentByTag(TODO);
+            ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
             if (toDoFragment != null && toDoFragment.isVisible()) {
                 if (!toDoFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), this))
+                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
                         Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
                     else {
                         Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
@@ -149,10 +156,10 @@ public class MainActivity extends AppCompatActivity
 
             }
 
-            NoteFragment noteFragment = (NoteFragment) getSupportFragmentManager().findFragmentByTag(NOTE);
+            NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
             if (noteFragment != null && noteFragment.isVisible()) {
                 if (!noteFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), this))
+                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
                         Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
                     else {
                         Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
@@ -172,16 +179,16 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_gallery:
-                replaceFragment(new GalleryFragment(), GALLERY, getSupportFragmentManager().beginTransaction());
+                replaceFragment(new GalleryFragment(), GALLERY, getFragmentManager().beginTransaction());
                 break;
             case R.id.nav_todo:
-                replaceFragment(new ToDoFragment(), TODO, getSupportFragmentManager().beginTransaction());
+                replaceFragment(new ToDoFragment(), TODO, getFragmentManager().beginTransaction());
                 break;
             case R.id.nav_note:
-                replaceFragment(new NoteFragment(), NOTE, getSupportFragmentManager().beginTransaction());
+                replaceFragment(new NoteFragment(), NOTE, getFragmentManager().beginTransaction());
                 break;
             case R.id.nav_settings:
-                getFragmentManager().beginTransaction().replace(R.id.main_frame, new SettingsFragment(), SETTINGS).addToBackStack(null).commit();
+                replaceFragment(new SettingsFragment(), SETTINGS, getFragmentManager().beginTransaction());
                 break;
         }
 

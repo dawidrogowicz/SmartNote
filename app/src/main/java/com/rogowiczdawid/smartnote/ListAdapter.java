@@ -1,12 +1,12 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +37,11 @@ class ListAdapter extends ArrayAdapter<Note> {
         if (note != null) {
             TextView title = (TextView) convertView.findViewById(R.id.item_title);
             TextView text = (TextView) convertView.findViewById(R.id.item_text);
+            TextView date = (TextView) convertView.findViewById(R.id.item_date);
 
             title.setText(note.getTitle());
             text.setText(note.getText());
+            date.setText(note.getDate());
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,7 +58,7 @@ class ListAdapter extends ArrayAdapter<Note> {
                     }
 
 
-                    FragmentTransaction fragmentTransaction = ((FragmentActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction fragmentTransaction = ((FragmentActivity) getContext()).getFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.main_frame, fragment, FRAGMENT_TEMPORARY_TAG);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();

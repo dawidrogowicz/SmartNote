@@ -1,9 +1,9 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ public class GalleryFragment extends Fragment {
     FloatingActionButton fabMain;
     FloatingActionButton fabNote;
     FloatingActionButton fabTodo;
+
 
     @Nullable
     @Override
@@ -52,12 +53,13 @@ public class GalleryFragment extends Fragment {
             }
         });
 
+
         //Open new NoteFragment
         fabNote.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.replaceFragment(new NoteFragment(), NOTE, getActivity().getSupportFragmentManager().beginTransaction());
-                Toast.makeText(getContext(), R.string.new_note, Toast.LENGTH_SHORT).show();
+                MainActivity.replaceFragment(new NoteFragment(), NOTE, getActivity().getFragmentManager().beginTransaction());
+                Toast.makeText(getActivity(), R.string.new_note, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -65,8 +67,8 @@ public class GalleryFragment extends Fragment {
         fabTodo.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.replaceFragment(new ToDoFragment(), TODO, getActivity().getSupportFragmentManager().beginTransaction());
-                Toast.makeText(getContext(), R.string.new_todo, Toast.LENGTH_SHORT).show();
+                MainActivity.replaceFragment(new ToDoFragment(), TODO, getActivity().getFragmentManager().beginTransaction());
+                Toast.makeText(getActivity(), R.string.new_todo, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -77,8 +79,8 @@ public class GalleryFragment extends Fragment {
         ArrayList<Note> notes = Utilities.getNotes(getActivity());
 
         if (notes != null && notes.size() > 0)
-            mainContainer.setAdapter(new ListAdapter(getContext(), R.layout.list_item, notes));
-        else Toast.makeText(getContext(), "There are no saved notes", Toast.LENGTH_SHORT).show();
+            mainContainer.setAdapter(new ListAdapter(getActivity(), R.layout.list_item, notes));
+        else Toast.makeText(getActivity(), "There are no saved notes", Toast.LENGTH_SHORT).show();
     }
 
     public void displayFabMenu() {
@@ -92,7 +94,7 @@ public class GalleryFragment extends Fragment {
         fabNote.setLayoutParams(paramsNote);
         fabTodo.setLayoutParams(paramsTodo);
 
-        Animation show_fab = AnimationUtils.loadAnimation(getContext(), R.anim.show_fab);
+        Animation show_fab = AnimationUtils.loadAnimation(getActivity(), R.anim.show_fab);
 
         fabNote.startAnimation(show_fab);
         fabNote.setClickable(true);
@@ -112,7 +114,7 @@ public class GalleryFragment extends Fragment {
         fabNote.setLayoutParams(paramsNote);
         fabTodo.setLayoutParams(paramsTodo);
 
-        Animation hide_fab = AnimationUtils.loadAnimation(getContext(), R.anim.hide_fab);
+        Animation hide_fab = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_fab);
 
         fabNote.startAnimation(hide_fab);
         fabNote.setClickable(false);

@@ -1,10 +1,10 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.Fragment;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,8 +33,9 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     private MyFragmentListener myFragmentListener;
     private ArrayList<String> user_list;
     private ArrayList<Boolean> checkbox_state_list;
-    private String title_val = "Title";
+    private String title_val;
 
+    //Method for instantiating Fragment
     public static ToDoFragment newInstance(String title, ArrayList<String> list, ArrayList<Boolean> checkbox_list) {
 
         boolean[] checkbox_array = new boolean[checkbox_list.size()];
@@ -60,6 +61,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         title = (EditText) rootView.findViewById(R.id.title_bar);
         user_list = new ArrayList<>();
         checkbox_state_list = new ArrayList<>();
+        title_val = "Title";
 
         //restoring savedInstanceState
         if (savedInstanceState != null) {
@@ -232,6 +234,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         container.addView(line);
     }
 
+    //OnClick Listener for "Add button"
     @Override
     public void onClick(View view) {
         AutoCompleteTextView editTextView = (AutoCompleteTextView) rootView.findViewById(R.id.getTextView);
@@ -250,6 +253,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    //Getters
     public String getTitleValue() {
         return title_val;
     }
