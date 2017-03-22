@@ -14,10 +14,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +29,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public final static String TAG = "MyApp_TAG";
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
     final static String GALLERY = "GALLERY_FRAGMENT";
     final static String SETTINGS = "SETTINGS_FRAGMENT";
     List<MyOnTouchListener> listeners;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
         transaction.replace(R.id.main_frame, fragment, tag);
@@ -47,6 +54,22 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        //Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    Log.d(TAG, "onAuthStateChanged: signed in:" + user.getUid());
+                } else {
+                    Log.d(TAG, "onAuthStateChanged: signed out");
+                }
+            }
+        };
+
+        //Navigation, Toolbar etc
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -58,11 +81,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Initialise custom listeners
         if (listeners == null) {
             listeners = new ArrayList<>();
         }
 
-        //ADDING FIRST FRAGMENT TO CONTAINER
+        //Add first Fragment to container
         if (findViewById(R.id.content_main) != null) {
             if (savedInstanceState != null) {
                 return;
@@ -71,6 +95,20 @@ public class MainActivity extends AppCompatActivity
             firstFragment.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
 
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
