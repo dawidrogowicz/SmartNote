@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/drawer_primary_group"
+        android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_todo"
@@ -20,16 +22,29 @@
 
     </group>
 
+    <group
+        android:id="@+id/drawer_secondary_group"
+        android:visible="false">
+
+        <item
+            android:id="@+id/nav_sign_in"
+            android:icon="@drawable/googleg_standard_color_18"
+            android:onClick="onMenuItemClick"
+            android:title="@string/sign_in" />
+
+        <item
+            android:id="@+id/nav_sign_out"
+            android:onClick="onMenuItemClick"
+            android:title="@string/sign_out" />
+
+    </group>
+
     <item android:title="@string/communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/send" />
 
             <item
                 android:id="@+id/nav_settings"

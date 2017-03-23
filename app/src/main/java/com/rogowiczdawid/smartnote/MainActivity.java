@@ -3,6 +3,7 @@ package com.rogowiczdawid.smartnote;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,25 +19,39 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.rogowiczdawid.smartnote.Fragments.GalleryFragment;
+import com.rogowiczdawid.smartnote.Fragments.NoteFragment;
+import com.rogowiczdawid.smartnote.Fragments.SettingsFragment;
+import com.rogowiczdawid.smartnote.Fragments.ToDoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     public final static String TAG = "MyApp_TAG";
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
     final static String GALLERY = "GALLERY_FRAGMENT";
     final static String SETTINGS = "SETTINGS_FRAGMENT";
+    final static int RC_SIGN_IN = 9001;
     List<MyOnTouchListener> listeners;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    GoogleApiClient mGoogleApiClient;
+    private boolean drawer_group_primary = true;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
         transaction.replace(R.id.main_frame, fragment, tag);
@@ -54,21 +69,6 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        //Firebase
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged: signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged: signed out");
-                }
-            }
-        };
-
         //Navigation, Toolbar etc
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,8 +78,36 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        final View navigationHeader = navigationView.getHeaderView(0);
+        navigationHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (drawer_group_primary) {
+                    navigationView.getMenu().setGroupVisible(R.id.drawer_primary_group, false);
+                    navigationView.getMenu().setGroupVisible(R.id.drawer_secondary_group, true);
+                } else {
+                    navigationView.getMenu().setGroupVisible(R.id.drawer_primary_group, true);
+                    navigationView.getMenu().setGroupVisible(R.id.drawer_secondary_group, false);
+                }
+                drawer_group_primary = !drawer_group_primary;
+            }
+        });
+
+        ////////Google SignIn///////
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .build();
 
         //Initialise custom listeners
         if (listeners == null) {
@@ -94,30 +122,6 @@ public class MainActivity extends AppCompatActivity
             GalleryFragment firstFragment = new GalleryFragment();
             firstFragment.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().add(R.id.main_frame, firstFragment).commit();
-
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -127,6 +131,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //Click handlers
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
@@ -228,11 +233,20 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 replaceFragment(new SettingsFragment(), SETTINGS, getFragmentManager().beginTransaction());
                 break;
+            case R.id.nav_share:
+                signIn();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_sign_in) signIn();
+        if (id == R.id.nav_sign_out) signOut();
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -246,8 +260,65 @@ public class MainActivity extends AppCompatActivity
         listeners.add(listener);
     }
 
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
-    interface MyOnTouchListener {
+    //////Google API//////
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+
+                    }
+                }
+        );
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handle sign in result:" + result.isSuccess());
+        if (result.isSuccess()) {
+            GoogleSignInAccount acct = result.getSignInAccount();
+            if (acct != null) {
+                TextView name = (TextView) findViewById(R.id.nav_user_name);
+                name.setText(acct.getDisplayName());
+                TextView mail = (TextView) findViewById(R.id.nav_user_mail);
+                mail.setText(acct.getEmail());
+                ImageView img = (ImageView) findViewById(R.id.nav_user_img);
+                img.setImageURI(acct.getPhotoUrl());
+            }
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+
+    public interface MyOnTouchListener {
         void onTouch(MotionEvent ev);
     }
 }

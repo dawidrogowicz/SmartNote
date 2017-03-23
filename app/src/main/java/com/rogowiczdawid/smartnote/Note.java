@@ -5,7 +5,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-class Note implements Serializable {
+public class Note implements Serializable {
 
     private String title;
     private String text;
