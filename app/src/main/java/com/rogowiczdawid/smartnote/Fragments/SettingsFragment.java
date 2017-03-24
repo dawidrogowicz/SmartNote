@@ -1,4 +1,4 @@
-package com.rogowiczdawid.smartnote;
+package com.rogowiczdawid.smartnote.Fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+
+import com.rogowiczdawid.smartnote.R;
 
 public class SettingsFragment extends PreferenceFragment {
 

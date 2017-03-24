@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.rogowiczdawid.smartnote.Fragments.SettingsFragment;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,11 +19,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-final class Utilities {
+public final class Utilities {
 
     private static final String FILE_CONST = "Note";
 
-    static ArrayList<Note> getNotes(Context context) {
+    public static ArrayList<Note> getNotes(Context context) {
         ArrayList<String> note_list = new ArrayList<>();
         ArrayList<Note> notes = new ArrayList<>();
         File dir = null;

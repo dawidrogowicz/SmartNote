@@ -1,4 +1,4 @@
-package com.rogowiczdawid.smartnote;
+package com.rogowiczdawid.smartnote.Fragments;
 
 import android.app.Fragment;
 import android.graphics.Paint;
@@ -20,6 +20,10 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.rogowiczdawid.smartnote.MainActivity;
+import com.rogowiczdawid.smartnote.MyFragmentListener;
+import com.rogowiczdawid.smartnote.R;
 
 import java.util.ArrayList;
 import java.util.Objects;

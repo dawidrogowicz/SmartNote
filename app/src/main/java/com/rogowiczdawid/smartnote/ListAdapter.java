@@ -13,15 +13,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.rogowiczdawid.smartnote.Fragments.NoteFragment;
+import com.rogowiczdawid.smartnote.Fragments.ToDoFragment;
+
 import java.util.List;
 
 
-class ListAdapter extends ArrayAdapter<Note> {
+public class ListAdapter extends ArrayAdapter<Note> {
 
     private final static String NOTE = "NOTE_FRAGMENT";
     private final static String TODO = "TO_DO_FRAGMENT";
 
-    ListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Note> objects) {
+    public ListAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Note> objects) {
         super(context, resource, objects);
     }
 

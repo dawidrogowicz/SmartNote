@@ -1,4 +1,4 @@
-package com.rogowiczdawid.smartnote;
+package com.rogowiczdawid.smartnote.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -12,6 +12,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.rogowiczdawid.smartnote.ListAdapter;
+import com.rogowiczdawid.smartnote.MainActivity;
+import com.rogowiczdawid.smartnote.Note;
+import com.rogowiczdawid.smartnote.R;
+import com.rogowiczdawid.smartnote.Utilities;
 
 import java.util.ArrayList;
 
