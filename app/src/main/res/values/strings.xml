@@ -36,4 +36,6 @@
     <string name="text">Text</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_out">Sign out</string>
+    <string name="sample_mail">sample.user@android.com</string>
+    <string name="username">Username</string>
 </resources>

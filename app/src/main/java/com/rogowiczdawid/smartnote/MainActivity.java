@@ -1,5 +1,7 @@
 package com.rogowiczdawid.smartnote;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -49,14 +51,25 @@ public class MainActivity extends AppCompatActivity
     final static String GALLERY = "GALLERY_FRAGMENT";
     final static String SETTINGS = "SETTINGS_FRAGMENT";
     final static int RC_SIGN_IN = 9001;
+    static GoogleApiClient mGoogleApiClient;
     List<MyOnTouchListener> listeners;
-    GoogleApiClient mGoogleApiClient;
     private boolean drawer_group_primary = true;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
         transaction.replace(R.id.main_frame, fragment, tag);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public static void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+
+                    }
+                }
+        );
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +92,19 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(this);
         final View navigationHeader = navigationView.getHeaderView(0);
         navigationHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+                Account[] accounts = manager.getAccounts();
+                for (Account acct : accounts) {
+                    navigationView.getMenu().add(acct.name);
+                }
+
                 if (drawer_group_primary) {
                     navigationView.getMenu().setGroupVisible(R.id.drawer_primary_group, false);
                     navigationView.getMenu().setGroupVisible(R.id.drawer_secondary_group, true);
@@ -109,6 +130,7 @@ public class MainActivity extends AppCompatActivity
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
 
+
         //Initialise custom listeners
         if (listeners == null) {
             listeners = new ArrayList<>();
@@ -129,6 +151,11 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     //Click handlers
@@ -233,9 +260,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 replaceFragment(new SettingsFragment(), SETTINGS, getFragmentManager().beginTransaction());
                 break;
-            case R.id.nav_share:
-                signIn();
-                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -272,7 +296,7 @@ public class MainActivity extends AppCompatActivity
     //////Google API//////
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "Couldn't connect to your account", Toast.LENGTH_SHORT).show();
     }
 
     public void signIn() {
@@ -285,7 +309,11 @@ public class MainActivity extends AppCompatActivity
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
-
+                        TextView name = (TextView) findViewById(R.id.nav_user_name);
+                        name.setText(R.string.username);
+                        TextView mail = (TextView) findViewById(R.id.nav_user_mail);
+                        mail.setText(R.string.sample_mail);
+                        ImageView img = (ImageView) findViewById(R.id.nav_user_img);
                     }
                 }
         );
@@ -301,10 +329,9 @@ public class MainActivity extends AppCompatActivity
                 TextView mail = (TextView) findViewById(R.id.nav_user_mail);
                 mail.setText(acct.getEmail());
                 ImageView img = (ImageView) findViewById(R.id.nav_user_img);
-                img.setImageURI(acct.getPhotoUrl());
+                img.setImageResource(android.R.drawable.sym_def_app_icon);
             }
         }
-
     }
 
     @Override
