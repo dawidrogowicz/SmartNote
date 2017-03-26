@@ -44,7 +44,8 @@ public class ListAdapter extends ArrayAdapter<Note> {
 
             title.setText(note.getTitle());
             text.setText(note.getText());
-            date.setText(note.getDate());
+//            String dateTime = DateFormat.getDateTimeInstance().format(new Date(note.getCreationDateTime()));
+//            date.setText(dateTime);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

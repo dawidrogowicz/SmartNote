@@ -1,15 +1,15 @@
 package com.rogowiczdawid.smartnote;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -43,14 +44,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     public final static String TAG = "MyApp_TAG";
     final static String NOTE = "NOTE_FRAGMENT";
     final static String TODO = "TO_DO_FRAGMENT";
     final static String GALLERY = "GALLERY_FRAGMENT";
     final static String SETTINGS = "SETTINGS_FRAGMENT";
-    final static int RC_SIGN_IN = 9001;
+    private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
+    private static final int RC_SIGN_IN = 9001;
     static GoogleApiClient mGoogleApiClient;
     List<MyOnTouchListener> listeners;
     private boolean drawer_group_primary = true;
@@ -99,12 +101,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-                Account[] accounts = manager.getAccounts();
-                for (Account acct : accounts) {
-                    navigationView.getMenu().add(acct.name);
-                }
-
                 if (drawer_group_primary) {
                     navigationView.getMenu().setGroupVisible(R.id.drawer_primary_group, false);
                     navigationView.getMenu().setGroupVisible(R.id.drawer_secondary_group, true);
@@ -116,18 +112,17 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ////////Google SignIn///////
+        ////////Google API////////
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    }
-                })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+//                .addApi(Drive.API)
+//                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
 
 
@@ -147,15 +142,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     //Click handlers
@@ -260,6 +262,35 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 replaceFragment(new SettingsFragment(), SETTINGS, getFragmentManager().beginTransaction());
                 break;
+            case R.id.nav_send:
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("message/rfc822")
+                        .putExtra(Intent.EXTRA_EMAIL, new String[]{"rogowiczdawid.develop@gmail.com"});
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Email type")
+                        .setMessage("Do you wish to send a bug report or just a regular message?")
+                        .setNegativeButton("Bug Report", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SimpleNote/BugReport")
+                                        .putExtra(Intent.EXTRA_TEXT,
+                                                "Describe your problem:\n\n" +
+                                                        "Your Android version:\n\n" +
+                                                        "If you have any additional information type it here:\n");
+                                startActivity(emailIntent);
+                            }
+                        })
+                        .setPositiveButton("Just email", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SimpleNote/UserMail");
+                                startActivity(emailIntent);
+                            }
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -297,6 +328,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Couldn't connect to your account", Toast.LENGTH_SHORT).show();
+
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(MainActivity.this, RESOLVE_CONNECTION_REQUEST_CODE);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Unable to resolve, message user appropriately");
+            }
+        } else {
+            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), MainActivity.this, 0).show();
+        }
     }
 
     public void signIn() {
@@ -341,7 +382,21 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
+        } else if (requestCode == RESOLVE_CONNECTION_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                mGoogleApiClient.connect();
+            }
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 
 

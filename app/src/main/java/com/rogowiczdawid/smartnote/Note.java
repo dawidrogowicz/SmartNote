@@ -10,6 +10,8 @@ public class Note implements Serializable {
     private String title;
     private String text;
     private String date;
+    private long creationDateTime = 0;
+    private long editiondateTime;
     private ArrayList<String> user_list;
     private ArrayList<Boolean> checkbox_state_list;
 
@@ -19,6 +21,9 @@ public class Note implements Serializable {
 
         DateFormat dateFormat = DateFormat.getDateInstance();
         date = dateFormat.format(new Date());
+
+        if (creationDateTime == 0) creationDateTime = System.currentTimeMillis();
+        editiondateTime = System.currentTimeMillis();
     }
 
     Note(String title_arg, ArrayList<String> user_list_arg, ArrayList<Boolean> checkbox_state_list_arg) {
@@ -29,6 +34,9 @@ public class Note implements Serializable {
 
         DateFormat dateFormat = DateFormat.getDateInstance();
         date = dateFormat.format(new Date());
+
+        if (creationDateTime == 0) creationDateTime = System.currentTimeMillis();
+        editiondateTime = System.currentTimeMillis();
 
         for (int i = 0; i < user_list.size(); i++) {
             if (i > 3) break;
@@ -46,6 +54,14 @@ public class Note implements Serializable {
 
     String getDate() {
         return date;
+    }
+
+    public long getCreationDateTime() {
+        return creationDateTime;
+    }
+
+    public long getEditiondateTime() {
+        return editiondateTime;
     }
 
     ArrayList<String> getUserList() {
