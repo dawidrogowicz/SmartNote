@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    //Click handlers
+    ////////Click handlers///////
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
@@ -291,6 +291,15 @@ public class MainActivity extends AppCompatActivity
                         .setNeutralButton("Cancel", null)
                         .show();
                 break;
+            case R.id.nav_share:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain")
+                        .putExtra(Intent.EXTRA_SUBJECT, "Share app with friends!")
+                        .putExtra(Intent.EXTRA_TEXT, "Hey, I'm using this note-taking app:\n" +
+                                "https://github.com/drsgi8/SmartNote/\n" +
+                                "Check it out you, may like it!");
+                startActivity(Intent.createChooser(sharingIntent, "Share via:"));
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
