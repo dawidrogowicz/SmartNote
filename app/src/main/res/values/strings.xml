@@ -38,4 +38,5 @@
     <string name="sign_out">Sign out</string>
     <string name="sample_mail">sample.user@android.com</string>
     <string name="username">Username</string>
+    <string name="set_reminder">Set reminder</string>
 </resources>

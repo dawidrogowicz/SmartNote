@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.rogowiczdawid.smartnote.Fragments.NoteFragment;
 import com.rogowiczdawid.smartnote.Fragments.ToDoFragment;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -44,8 +46,8 @@ public class ListAdapter extends ArrayAdapter<Note> {
 
             title.setText(note.getTitle());
             text.setText(note.getText());
-//            String dateTime = DateFormat.getDateTimeInstance().format(new Date(note.getCreationDateTime()));
-//            date.setText(dateTime);
+            String dateTime = DateFormat.getDateTimeInstance().format(new Date(note.getCreationDateTime()));
+            date.setText(dateTime);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

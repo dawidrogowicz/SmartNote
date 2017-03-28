@@ -1,15 +1,12 @@
 package com.rogowiczdawid.smartnote;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Note implements Serializable {
 
     private String title;
     private String text;
-    private String date;
     private long creationDateTime = 0;
     private long editiondateTime;
     private ArrayList<String> user_list;
@@ -18,9 +15,6 @@ public class Note implements Serializable {
     Note(String title_arg, String text_arg) {
         title = title_arg;
         text = text_arg;
-
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        date = dateFormat.format(new Date());
 
         if (creationDateTime == 0) creationDateTime = System.currentTimeMillis();
         editiondateTime = System.currentTimeMillis();
@@ -31,9 +25,6 @@ public class Note implements Serializable {
         user_list = user_list_arg;
         checkbox_state_list = checkbox_state_list_arg;
         text = "";
-
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        date = dateFormat.format(new Date());
 
         if (creationDateTime == 0) creationDateTime = System.currentTimeMillis();
         editiondateTime = System.currentTimeMillis();
@@ -50,10 +41,6 @@ public class Note implements Serializable {
 
     public String getText() {
         return text;
-    }
-
-    String getDate() {
-        return date;
     }
 
     public long getCreationDateTime() {

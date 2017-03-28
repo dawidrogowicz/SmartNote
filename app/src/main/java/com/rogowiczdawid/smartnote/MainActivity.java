@@ -1,7 +1,11 @@
 package com.rogowiczdawid.smartnote;
 
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -22,8 +26,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -41,6 +47,7 @@ import com.rogowiczdawid.smartnote.Fragments.SettingsFragment;
 import com.rogowiczdawid.smartnote.Fragments.ToDoFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         );
     }
 
+    /////////Application life cycle///////////
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -154,93 +162,92 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.disconnect();
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    ////////Click handlers///////
+    ///////////////////Click handlers////////////////
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_delete) {
+        switch (id) {
+            case R.id.action_delete: {
 
-            //Check if button was pressed in the right fragment
-            final ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
-            final NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
+                //Check if button was pressed in the right fragment
+                final ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
+                final NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
 
-            if ((toDoFragment != null && toDoFragment.isVisible()) || (noteFragment != null && noteFragment.isVisible())) {
+                if ((toDoFragment != null && toDoFragment.isVisible()) || (noteFragment != null && noteFragment.isVisible())) {
 
-                //Create AlertDialog so the user won't accidentally delete file
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.delete_note);
-                builder.setMessage(R.string.you_wont_be_able);
-                builder.setNegativeButton(R.string.no, null);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    //Create AlertDialog so the user won't accidentally delete file
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.delete_note);
+                    builder.setMessage(R.string.you_wont_be_able);
+                    builder.setNegativeButton(R.string.no, null);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                        //Prepare transaction to gallery fragment after deleting file
-                        GalleryFragment galleryFragment = new GalleryFragment();
-                        galleryFragment.setArguments(getIntent().getExtras());
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.main_frame, galleryFragment);
-                        transaction.addToBackStack(null);
+                            //Prepare transaction to gallery fragment after deleting file
+                            GalleryFragment galleryFragment = new GalleryFragment();
+                            galleryFragment.setArguments(getIntent().getExtras());
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction.replace(R.id.main_frame, galleryFragment);
+                            transaction.addToBackStack(null);
 
-                        if (toDoFragment != null && toDoFragment.isVisible()) {
+                            if (toDoFragment != null && toDoFragment.isVisible()) {
 
-                            if (Utilities.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
-                                transaction.commit();
-                                Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
-                            } else
-                                Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
-                        } else if (noteFragment != null && noteFragment.isVisible()) {
+                                if (Utilities.onDeleteNote(toDoFragment.getTitleValue(), getApplicationContext())) {
+                                    transaction.commit();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
+                                } else
+                                    Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
+                            } else if (noteFragment != null && noteFragment.isVisible()) {
 
-                            if (Utilities.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
-                                transaction.commit();
-                                Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
-                            } else
-                                Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
+                                if (Utilities.onDeleteNote(noteFragment.getTitleValue(), getApplicationContext())) {
+                                    transaction.commit();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.file_deleted), Toast.LENGTH_SHORT).show();
+                                } else
+                                    Toast.makeText(getApplicationContext(), getString(R.string.couldnt_delete), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
 
-                builder.create().show();
-            }
+                    builder.create().show();
+                }
 
-            return true;
-
-        } else if (id == R.id.action_save) {
-
-            ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
-            if (toDoFragment != null && toDoFragment.isVisible()) {
-                if (!toDoFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
-                        Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
-                    else {
-                        Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+                return true;
 
             }
+            case R.id.action_save: {
+                NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
+                ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
 
-            NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
-            if (noteFragment != null && noteFragment.isVisible()) {
-                if (!noteFragment.getTitleValue().equals("Title")) {
-                    if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
-                        Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
-                    else {
-                        Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+                if (toDoFragment != null && toDoFragment.isVisible()) {
+                    if (!toDoFragment.getTitleValue().equals("Title")) {
+                        if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
+                            Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
+                        else {
+                            Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+
+                } else if (noteFragment != null && noteFragment.isVisible()) {
+                    if (!noteFragment.getTitleValue().equals("Title")) {
+                        if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
+                            Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
+                        else {
+                            Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
-
-            return true;
+            case R.id.action_notification: {
+                //Get dateTime with dialogs and it will trigger next actions
+                getDateTime();
+                break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -313,6 +320,22 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_sign_out) signOut();
     }
 
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /////////////Other//////////
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
     public boolean dispatchTouchEvent(MotionEvent ev) {
         for (MyOnTouchListener listener : listeners) {
             listener.onTouch(ev);
@@ -324,16 +347,84 @@ public class MainActivity extends AppCompatActivity
         listeners.add(listener);
     }
 
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void getDateTime() {
+
+        //Determine which fragment is currently in use
+        ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
+        NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
+        String text = "";
+        final String title;
+        int i = 0;
+        final int notificationId;
+
+        if (toDoFragment != null && toDoFragment.isVisible()) {
+            for (String s : toDoFragment.getUserList()) {
+                if (i > 3) break;
+                text += s.concat(" ");
+                i++;
+            }
+            title = toDoFragment.getTitleValue();
+            notificationId = 666;
+        } else if (noteFragment != null && noteFragment.isVisible()) {
+            text = noteFragment.getTextVal();
+            if (text.length() > 15) {
+                text = text.substring(0, 15);
+            }
+            title = noteFragment.getTitleValue();
+            notificationId = 999;
+        } else return;
+        final String finalText = text;
+
+        //Get date and time from user
+        final int[] dateTime = new int[5];
+        Calendar c = Calendar.getInstance();
+        dateTime[0] = c.get(Calendar.YEAR);
+        dateTime[1] = c.get(Calendar.MONTH);
+        dateTime[2] = c.get(Calendar.DAY_OF_MONTH);
+        dateTime[3] = 16;
+
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                dateTime[3] = i;
+                dateTime[4] = i1;
+                createNotification(dateTime, title, finalText, notificationId);
+            }
+        }, dateTime[3], dateTime[4], true);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                dateTime[0] = i;
+                dateTime[1] = i1;
+                dateTime[2] = i2;
+                timePickerDialog.show();
+            }
+        }, dateTime[0], dateTime[1], dateTime[2]);
+
+        datePickerDialog.show();
     }
 
-    //////Google API//////
+    private void createNotification(int[] arr, String title, String text, int notificationId) {
+
+        //Setting calendar to date and time user have chosen in dialog
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(arr[0], arr[1], arr[2], arr[3], arr[4]);
+
+        //Create broadcast
+        Intent resultIntent = new Intent(this, Receiver.class);
+        resultIntent.putExtra("title", title);
+        resultIntent.putExtra("text", text);
+        resultIntent.putExtra("id", notificationId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Set alarm that will send broadcast
+        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarm.set(SettingsFragment.alarm_type, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    //////////////Google API//////////////
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Couldn't connect to your account", Toast.LENGTH_SHORT).show();
@@ -413,4 +504,3 @@ public class MainActivity extends AppCompatActivity
         void onTouch(MotionEvent ev);
     }
 }
-
