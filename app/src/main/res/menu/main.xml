@@ -18,6 +18,7 @@
         android:id="@+id/action_notification"
         android:icon="@android:drawable/ic_lock_idle_alarm"
         android:orderInCategory="3"
-        android:title="@string/set_reminder" />
+        android:title="@string/set_reminder"
+        app:showAsAction="ifRoom" />
 
 </menu>

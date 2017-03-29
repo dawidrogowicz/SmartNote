@@ -21,7 +21,7 @@ public class NoteFragment extends Fragment {
     MultiAutoCompleteTextView editText;
     boolean title_bar_down = true;
     private String text_val;
-    private String title_val = "Title";
+    private String title_val = null;
     private MyFragmentListener myFragmentListener;
 
 
@@ -105,7 +105,7 @@ public class NoteFragment extends Fragment {
                 if (editText.getText().length() > 1) {
                     text_val = String.valueOf(editText.getText());
                     title_val = String.valueOf(title.getText());
-                    if (title_val.equals("Title")) {
+                    if (title_val.isEmpty()) {
                         int index = text_val.length();
                         char last = text_val.charAt(index - 1);
                         if (index > 5 && last == ' ') {
@@ -127,5 +127,11 @@ public class NoteFragment extends Fragment {
 
     public String getTextVal() {
         return text_val;
+    }
+
+    //Setters
+
+    public void setTitle_val(String title_val) {
+        this.title_val = title_val;
     }
 }

@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rogowiczdawid.smartnote.ListAdapter;
@@ -30,6 +31,8 @@ public class GalleryFragment extends Fragment {
     FloatingActionButton fabMain;
     FloatingActionButton fabNote;
     FloatingActionButton fabTodo;
+    TextView fabNoteText;
+    TextView fabTodoText;
 
 
     @Nullable
@@ -41,7 +44,12 @@ public class GalleryFragment extends Fragment {
         fabMain = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton);
         fabNote = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonNote);
         fabTodo = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButtonTodo);
+        fabNoteText = (TextView) rootView.findViewById(R.id.fab_text_note);
+        fabTodoText = (TextView) rootView.findViewById(R.id.fab_text_todo);
         fab_visible = false;
+
+        fabNoteText.setBackgroundResource(R.drawable.fab_text);
+        fabTodoText.setBackgroundResource(R.drawable.fab_text);
 
         updateList();
 
@@ -65,7 +73,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MainActivity.replaceFragment(new NoteFragment(), NOTE, getActivity().getFragmentManager().beginTransaction());
-                Toast.makeText(getActivity(), R.string.new_note, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -74,7 +81,6 @@ public class GalleryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MainActivity.replaceFragment(new ToDoFragment(), TODO, getActivity().getFragmentManager().beginTransaction());
-                Toast.makeText(getActivity(), R.string.new_todo, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -91,8 +97,8 @@ public class GalleryFragment extends Fragment {
 
     public void displayFabMenu() {
 
-        FrameLayout.LayoutParams paramsNote = (FrameLayout.LayoutParams) fabNote.getLayoutParams();
-        FrameLayout.LayoutParams paramsTodo = (FrameLayout.LayoutParams) fabTodo.getLayoutParams();
+        RelativeLayout.LayoutParams paramsNote = (RelativeLayout.LayoutParams) fabNote.getLayoutParams();
+        RelativeLayout.LayoutParams paramsTodo = (RelativeLayout.LayoutParams) fabTodo.getLayoutParams();
 
         paramsNote.bottomMargin += (int) (fabMain.getHeight() * 1.2);
         paramsTodo.bottomMargin += (int) (fabMain.getHeight() * 1.2 + fabNote.getHeight() * 1.2);
@@ -104,15 +110,17 @@ public class GalleryFragment extends Fragment {
 
         fabNote.startAnimation(show_fab);
         fabNote.setClickable(true);
+        fabNoteText.setAnimation(show_fab);
         fabTodo.startAnimation(show_fab);
         fabTodo.setClickable(true);
+        fabTodoText.setAnimation(show_fab);
 
     }
 
     public void hideFabMenu() {
 
-        FrameLayout.LayoutParams paramsNote = (FrameLayout.LayoutParams) fabNote.getLayoutParams();
-        FrameLayout.LayoutParams paramsTodo = (FrameLayout.LayoutParams) fabTodo.getLayoutParams();
+        RelativeLayout.LayoutParams paramsNote = (RelativeLayout.LayoutParams) fabNote.getLayoutParams();
+        RelativeLayout.LayoutParams paramsTodo = (RelativeLayout.LayoutParams) fabTodo.getLayoutParams();
 
         paramsNote.bottomMargin -= (int) (fabMain.getHeight() * 1.2);
         paramsTodo.bottomMargin -= (int) (fabMain.getHeight() * 1.2 + fabNote.getHeight() * 1.2);
@@ -120,12 +128,15 @@ public class GalleryFragment extends Fragment {
         fabNote.setLayoutParams(paramsNote);
         fabTodo.setLayoutParams(paramsTodo);
 
-        Animation hide_fab = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_fab);
+        Animation hide_upper_fab = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_fab);
+        Animation hide_lower_fab = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_lower_fab);
 
-        fabNote.startAnimation(hide_fab);
+        fabNote.startAnimation(hide_lower_fab);
         fabNote.setClickable(false);
-        fabTodo.startAnimation(hide_fab);
+        fabNoteText.setAnimation(hide_lower_fab);
+        fabTodo.startAnimation(hide_upper_fab);
         fabTodo.setClickable(false);
+        fabTodoText.setAnimation(hide_upper_fab);
 
     }
 }

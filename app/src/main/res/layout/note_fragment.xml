@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorAccent"
+        android:hint="@string/title"
         android:inputType="text"
         android:maxLines="1"
         android:selectAllOnFocus="true"
-        android:text="@string/title"
         android:textAlignment="center"
         android:textColor="#8F000000"
         android:textSize="24sp" />
@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="#0000"
             android:gravity="start"
-            android:minLines="15"
+            android:hint="@string/enter_your_text_here"
+            android:minLines="25"
             tools:targetApi="lollipop" />
     </ScrollView>
 </LinearLayout>

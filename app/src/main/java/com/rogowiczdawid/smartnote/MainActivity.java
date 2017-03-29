@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private static final int RC_SIGN_IN = 9001;
     static GoogleApiClient mGoogleApiClient;
     List<MyOnTouchListener> listeners;
+    Menu optionsMenu;
     private boolean drawer_group_primary = true;
 
     public static <T extends Fragment> void replaceFragment(T fragment, String tag, FragmentTransaction transaction) {
@@ -218,28 +220,67 @@ public class MainActivity extends AppCompatActivity
 
             }
             case R.id.action_save: {
-                NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
-                ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
+                final NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
+                final ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
 
                 if (toDoFragment != null && toDoFragment.isVisible()) {
-                    if (!toDoFragment.getTitleValue().equals("Title")) {
+                    if (!toDoFragment.getTitleValue().isEmpty()) {
                         if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
                             Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
                         else {
                             Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                    } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+                    } else {
+                        final EditText editTitle = new EditText(this);
+                        editTitle.setHint("Set your title here");
+
+                        final MenuItem retryItem = optionsMenu.getItem(0);
+
+                        //If title wasn't set ask user to do it then get it's val and try to save again
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle(R.string.set_title)
+                                .setView(editTitle)
+                                .setNegativeButton("Cancel", null)
+                                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        toDoFragment.setTitle_val(String.valueOf(editTitle.getText()));
+                                        onOptionsItemSelected(retryItem);
+                                    }
+                                })
+                                .show();
+                    }
 
                 } else if (noteFragment != null && noteFragment.isVisible()) {
-                    if (!noteFragment.getTitleValue().equals("Title")) {
+                    if (!noteFragment.getTitleValue().isEmpty()) {
                         if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
                             Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
                         else {
                             Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                    } else Toast.makeText(this, R.string.set_title, Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        final EditText editTitle = new EditText(this);
+                        editTitle.setHint("Set your title here");
+
+                        final MenuItem retryItem = optionsMenu.getItem(0);
+
+                        //If title wasn't set ask user to do it then get it's val and try to save again
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle(R.string.set_title)
+                                .setView(editTitle)
+                                .setNegativeButton("Cancel", null)
+                                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        noteFragment.setTitle_val(String.valueOf(editTitle.getText()));
+                                        onOptionsItemSelected(retryItem);
+                                    }
+                                })
+                                .show();
+                    }
                 }
                 return true;
             }
@@ -333,6 +374,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        optionsMenu = menu;
         return true;
     }
 
@@ -455,6 +497,7 @@ public class MainActivity extends AppCompatActivity
                         TextView mail = (TextView) findViewById(R.id.nav_user_mail);
                         mail.setText(R.string.sample_mail);
                         ImageView img = (ImageView) findViewById(R.id.nav_user_img);
+                        img.setImageResource(R.mipmap.ic_launcher);
                     }
                 }
         );
@@ -470,7 +513,7 @@ public class MainActivity extends AppCompatActivity
                 TextView mail = (TextView) findViewById(R.id.nav_user_mail);
                 mail.setText(acct.getEmail());
                 ImageView img = (ImageView) findViewById(R.id.nav_user_img);
-                img.setImageResource(android.R.drawable.sym_def_app_icon);
+                img.setImageURI(acct.getPhotoUrl());
             }
         }
     }
