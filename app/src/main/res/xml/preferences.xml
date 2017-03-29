@@ -17,4 +17,12 @@
         android:switchTextOn="external"
         android:title="External Storage" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_alarm_wake_up"
+        android:summary="Your device will automatically wake up after receiving notification"
+        android:switchTextOff="@string/no"
+        android:switchTextOn="@string/yes"
+        android:title="Wake up on notification" />
+
 </PreferenceScreen>

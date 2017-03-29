@@ -36,4 +36,8 @@
     <string name="text">Text</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_out">Sign out</string>
+    <string name="sample_mail">sample.user@android.com</string>
+    <string name="username">Username</string>
+    <string name="set_reminder">Set reminder</string>
+    <string name="enter_your_text_here">Enter your text here</string>
 </resources>

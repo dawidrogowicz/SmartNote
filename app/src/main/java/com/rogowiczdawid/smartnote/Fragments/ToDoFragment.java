@@ -65,7 +65,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         title = (EditText) rootView.findViewById(R.id.title_bar);
         user_list = new ArrayList<>();
         checkbox_state_list = new ArrayList<>();
-        title_val = "Title";
+        title_val = null;
 
         //restoring savedInstanceState
         if (savedInstanceState != null) {
@@ -243,13 +243,13 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         AutoCompleteTextView editTextView = (AutoCompleteTextView) rootView.findViewById(R.id.getTextView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (!Objects.equals(String.valueOf(editTextView.getText()), "")) {
+            if (!Objects.equals(String.valueOf(editTextView.getText()), null)) {
                 String text = String.valueOf(editTextView.getText());
-                editTextView.setText("");
+                editTextView.setText(null);
                 createLayout(text, false);
 
                 //Change title to first added item
-                if (String.valueOf(title.getText()).equals("Title")) {
+                if (String.valueOf(title.getText()).isEmpty()) {
                     title.setText(text);
                     title_val = text;
                 }
@@ -268,5 +268,11 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
 
     public ArrayList<Boolean> getCheckbox_state_list() {
         return checkbox_state_list;
+    }
+
+    //Setters
+
+    public void setTitle_val(String title_val) {
+        this.title_val = title_val;
     }
 }

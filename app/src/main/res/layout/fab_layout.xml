@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/fab_text_todo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/floatingActionButtonTodo"
+        android:layout_alignBottom="@+id/floatingActionButtonTodo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/floatingActionButtonTodo"
+        android:layout_toStartOf="@+id/floatingActionButtonTodo"
+        android:text="@string/to_do_list"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButtonTodo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
@@ -17,11 +35,29 @@
         app:fabSize="mini"
         app:srcCompat="?android:attr/actionModePasteDrawable" />
 
+    <TextView
+        android:id="@+id/fab_text_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/floatingActionButtonNote"
+        android:layout_alignBottom="@+id/floatingActionButtonNote"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/floatingActionButtonNote"
+        android:layout_toStartOf="@+id/floatingActionButtonNote"
+        android:text="@string/note"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButtonNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
@@ -30,4 +66,4 @@
         app:fabSize="mini"
         app:srcCompat="?attr/actionModeCopyDrawable" />
 
-</FrameLayout>
+</RelativeLayout>

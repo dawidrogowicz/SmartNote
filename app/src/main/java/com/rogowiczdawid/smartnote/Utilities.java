@@ -64,7 +64,7 @@ public final class Utilities {
         return notes;
     }
 
-    static boolean onSaveNote(Note note, Context context) {
+    public static boolean onSaveNote(Note note, Context context) {
         //Add constant string to file name
         String title = note.getTitle() + FILE_CONST;
 
@@ -101,7 +101,8 @@ public final class Utilities {
         return true;
     }
 
-    static boolean onDeleteNote(String filename, Context context) {
+    public static boolean onDeleteNote(String filename, Context context) {
+
         File dir = null;
 
         if (SettingsFragment.write_to_external)
