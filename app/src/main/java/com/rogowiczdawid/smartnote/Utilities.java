@@ -32,7 +32,7 @@ public final class Utilities {
         if (SettingsFragment.write_to_external)
             if (isExternalStorageReadable()) dir = context.getExternalFilesDir(null);
             else
-                Toast.makeText(context, "Unable to access external storage", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.unable_to_access, Toast.LENGTH_SHORT).show();
         else dir = context.getFilesDir();
 
         if (dir != null) {
@@ -77,7 +77,7 @@ public final class Utilities {
             if (isExternalStorageWritable())
                 file = new File(context.getExternalFilesDir(null), title);
             else
-                Toast.makeText(context, "Unable to access external storage", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.unable_to_access, Toast.LENGTH_SHORT).show();
         else file = new File(context.getFilesDir(), title);
 
         if (file != null) {
@@ -108,7 +108,7 @@ public final class Utilities {
         if (SettingsFragment.write_to_external)
             if (isExternalStorageWritable()) dir = context.getExternalFilesDir(null);
             else
-                Toast.makeText(context, "Unable to access external storage", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.unable_to_access, Toast.LENGTH_SHORT).show();
 
         else dir = context.getFilesDir();
 

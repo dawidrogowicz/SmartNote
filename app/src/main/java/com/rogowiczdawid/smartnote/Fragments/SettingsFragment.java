@@ -53,9 +53,8 @@ public class SettingsFragment extends PreferenceFragment {
                         }
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle("Do you want to move your files to " + move_to + "?")
-                                .setMessage("All your saved notes will be deleted from "
-                                        + move_from + " and added to " + move_to)
+                        builder.setTitle(getString(R.string.move_files) + move_to + "?")
+                                .setMessage(String.format(getString(R.string.notes_deleted), move_from, move_to))
                                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -67,7 +66,7 @@ public class SettingsFragment extends PreferenceFragment {
                                         write_to_external = preferences.getBoolean("pref_storage_dir", false);
                                         for (Note n : temp_list) {
                                             if (!Utilities.onSaveNote(n, getActivity()))
-                                                Toast.makeText(getActivity(), "couldn't save file", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity(), R.string.wrong, Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 })

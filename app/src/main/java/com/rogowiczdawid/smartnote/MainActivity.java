@@ -225,15 +225,12 @@ public class MainActivity extends AppCompatActivity
 
                 if (toDoFragment != null && toDoFragment.isVisible()) {
                     if (!toDoFragment.getTitleValue().isEmpty()) {
-                        if (Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
-                            Toast.makeText(this, R.string.saved_todo, Toast.LENGTH_SHORT).show();
-                        else {
-                            Toast.makeText(this, R.string.wrong_todo, Toast.LENGTH_SHORT).show();
+                        if (!Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
+                            Toast.makeText(this, R.string.wrong, Toast.LENGTH_SHORT).show();
                             return false;
-                        }
                     } else {
                         final EditText editTitle = new EditText(this);
-                        editTitle.setHint("Set your title here");
+                        editTitle.setHint(R.string.set_title_here);
 
                         final MenuItem retryItem = optionsMenu.getItem(0);
 
@@ -241,8 +238,8 @@ public class MainActivity extends AppCompatActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle(R.string.set_title)
                                 .setView(editTitle)
-                                .setNegativeButton("Cancel", null)
-                                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.cancel, null)
+                                .setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         toDoFragment.setTitle_val(String.valueOf(editTitle.getText()));
@@ -254,16 +251,13 @@ public class MainActivity extends AppCompatActivity
 
                 } else if (noteFragment != null && noteFragment.isVisible()) {
                     if (!noteFragment.getTitleValue().isEmpty()) {
-                        if (Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
-                            Toast.makeText(this, R.string.saved_note, Toast.LENGTH_SHORT).show();
-                        else {
-                            Toast.makeText(this, R.string.wrong_note, Toast.LENGTH_SHORT).show();
+                        if (!Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
+                            Toast.makeText(this, R.string.wrong, Toast.LENGTH_SHORT).show();
                             return false;
-                        }
                     } else {
 
                         final EditText editTitle = new EditText(this);
-                        editTitle.setHint("Set your title here");
+                        editTitle.setHint(R.string.set_title_here);
 
                         final MenuItem retryItem = optionsMenu.getItem(0);
 
@@ -271,8 +265,8 @@ public class MainActivity extends AppCompatActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle(R.string.set_title)
                                 .setView(editTitle)
-                                .setNegativeButton("Cancel", null)
-                                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.cancel, null)
+                                .setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         noteFragment.setTitle_val(String.valueOf(editTitle.getText()));
@@ -316,37 +310,33 @@ public class MainActivity extends AppCompatActivity
                         .putExtra(Intent.EXTRA_EMAIL, new String[]{"rogowiczdawid.develop@gmail.com"});
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Email type")
-                        .setMessage("Do you wish to send a bug report or just a regular message?")
-                        .setNegativeButton("Bug Report", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.email_type)
+                        .setMessage(R.string.bug_or_message)
+                        .setNegativeButton(R.string.mail_report, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SimpleNote/BugReport")
                                         .putExtra(Intent.EXTRA_TEXT,
-                                                "Describe your problem:\n\n" +
-                                                        "Your Android version:\n\n" +
-                                                        "If you have any additional information type it here:\n");
+                                                getString(R.string.bug_report));
                                 startActivity(emailIntent);
                             }
                         })
-                        .setPositiveButton("Just email", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.just_mail, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SimpleNote/UserMail");
                                 startActivity(emailIntent);
                             }
                         })
-                        .setNeutralButton("Cancel", null)
+                        .setNeutralButton(R.string.cancel, null)
                         .show();
                 break;
             case R.id.nav_share:
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain")
-                        .putExtra(Intent.EXTRA_SUBJECT, "Share app with friends!")
-                        .putExtra(Intent.EXTRA_TEXT, "Hey, I'm using this note-taking app:\n" +
-                                "https://github.com/drsgi8/SmartNote/\n" +
-                                "Check it out you, may like it!");
-                startActivity(Intent.createChooser(sharingIntent, "Share via:"));
+                        .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_app))
+                        .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message));
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
 
         }
 
@@ -469,7 +459,7 @@ public class MainActivity extends AppCompatActivity
     //////////////Google API//////////////
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, "Couldn't connect to your account", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.couldnt_connect, Toast.LENGTH_SHORT).show();
 
         if (connectionResult.hasResolution()) {
             try {
