@@ -92,7 +92,7 @@ public class GalleryFragment extends Fragment {
 
         if (notes != null && notes.size() > 0)
             mainContainer.setAdapter(new ListAdapter(getActivity(), R.layout.list_item, notes));
-        else Toast.makeText(getActivity(), "There are no saved notes", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), R.string.no_saved_notes, Toast.LENGTH_SHORT).show();
     }
 
     public void displayFabMenu() {

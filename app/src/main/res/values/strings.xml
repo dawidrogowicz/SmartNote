@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SmartNote</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="server_client_id">499901125622-n281594m3gtfugqriqntn6t8a8qecugc.apps.googleusercontent.com</string>
@@ -11,19 +10,18 @@
     <string name="hold_to_set_the_title">Hold to set the title</string>
     <string name="Save">Save</string>
     <string name="delete">Delete</string>
-    <string name="file_deleted">File deleted succesfully!</string>
-    <string name="couldnt_delete">Couldn\'t delete file</string>
+    <string name="file_deleted">File deleted successfully :)</string>
+    <string name="couldnt_delete">Couldn\'t delete file ;(</string>
     <string name="delete_note">Delete current note?</string>
     <string name="you_wont_be_able">You won\'t be able to use it never again :(</string>
+    <string name="file_saved">File save Successfully :D</string>
+    <string name="couldnt_save">Couldn\'t save file ;(</string>
     <string name="no">NO</string>
     <string name="yes">YES</string>
+    <string name="external">external storage</string>
+    <string name="internal">internal storage</string>
     <string name="apptheme">AppTheme</string>
-    <string name="wrong_note">Something went wrong ;c - Note</string>
-    <string name="wrong_todo">Something went wrong ;c - ToDo</string>
-    <string name="saved_todo">File saved :3 - ToDo</string>
-    <string name="saved_note">File saved :3 - Note</string>
-    <string name="new_note">New note</string>
-    <string name="new_todo">New to-do list</string>
+    <string name="wrong">Something went wrong</string>
     <string name="set_title">Please, set your title first :)</string>
     <string name="gallery">Gallery</string>
     <string name="note">Note</string>
@@ -40,4 +38,26 @@
     <string name="username">Username</string>
     <string name="set_reminder">Set reminder</string>
     <string name="enter_your_text_here">Enter your text here</string>
+    <string name="no_saved_notes">There are no saved notes</string>
+    <string name="move_files">Do you want to move your files to</string>
+    <string name="notes_deleted_1">All your saved notes will be deleted from</string>
+    <string name="notes_deleted_2">and added to</string>
+    <string name="unable_to_access">Unable to access external storage</string>
+    <string name="couldnt_connect">Couldn\'t connect to your account</string>
+    <string name="bug_or_message">Do you wish to send a bug report or just a regular message?</string>
+    <string name="bug_report">Describe your problem: \n\n\nYour Android version: \n\n\nIf you have any additional information type it here:\n</string>
+    <string name="just_mail">Just email</string>
+    <string name="email_type">Email type</string>
+    <string name="mail_report">Bug Report</string>
+    <string name="cancel">Cancel</string>
+    <string name="share_app">Share app with friends!</string>
+    <string name="share_message">Hey, I\'m using this note-taking app: https://github.com/drsgi8/SmartNote/ Check it out you, may like it!</string>
+    <string name="share_via">Share via:</string>
+    <string name="set">Set</string>
+    <string name="set_title_here">Set your title here</string>
+    <string name="wake_up">Your device will automatically wake up after receiving notification</string>
+    <string name="wake_up_on">Wake up on notification</string>
+    <string name="External">External Storage</string>
+    <string name="save_on_sd">Save your notes and read from SD card</string>
+    <string name="theme">Theme</string>
 </resources>
