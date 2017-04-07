@@ -225,9 +225,13 @@ public class MainActivity extends AppCompatActivity
 
                 if (toDoFragment != null && toDoFragment.isVisible()) {
                     if (!toDoFragment.getTitleValue().isEmpty()) {
-                        if (!Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext()))
+                        if (!Utilities.onSaveNote(new Note(toDoFragment.getTitleValue(), toDoFragment.getUserList(), toDoFragment.getCheckbox_state_list()), getApplicationContext())) {
                             Toast.makeText(this, R.string.wrong, Toast.LENGTH_SHORT).show();
                             return false;
+                        } else {
+                            Toast.makeText(this, R.string.file_saved, Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         final EditText editTitle = new EditText(this);
                         editTitle.setHint(R.string.set_title_here);
@@ -251,9 +255,13 @@ public class MainActivity extends AppCompatActivity
 
                 } else if (noteFragment != null && noteFragment.isVisible()) {
                     if (!noteFragment.getTitleValue().isEmpty()) {
-                        if (!Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext()))
+                        if (!Utilities.onSaveNote(new Note(noteFragment.getTitleValue(), noteFragment.getTextVal()), getApplicationContext())) {
                             Toast.makeText(this, R.string.wrong, Toast.LENGTH_SHORT).show();
                             return false;
+                        } else {
+                            Toast.makeText(this, R.string.file_saved, Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
 
                         final EditText editTitle = new EditText(this);

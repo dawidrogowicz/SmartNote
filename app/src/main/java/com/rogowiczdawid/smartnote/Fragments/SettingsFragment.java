@@ -45,16 +45,16 @@ public class SettingsFragment extends PreferenceFragment {
                     if (Utilities.getNotes(getActivity()).size() > 0) {
                         String move_to, move_from;
                         if (write_to_external) {
-                            move_to = "internal storage";
-                            move_from = "external storage";
+                            move_to = " " + getString(R.string.internal) + " ";
+                            move_from = " " + getString(R.string.external) + " ";
                         } else {
-                            move_to = "external storage";
-                            move_from = "internal storage";
+                            move_to = " " + getString(R.string.external) + " ";
+                            move_from = " " + getString(R.string.internal) + " ";
                         }
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(getString(R.string.move_files) + move_to + "?")
-                                .setMessage(String.format(getString(R.string.notes_deleted), move_from, move_to))
+                                .setMessage(getString(R.string.notes_deleted_1) + move_from + getString(R.string.notes_deleted_2) + move_to)
                                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -66,7 +66,7 @@ public class SettingsFragment extends PreferenceFragment {
                                         write_to_external = preferences.getBoolean("pref_storage_dir", false);
                                         for (Note n : temp_list) {
                                             if (!Utilities.onSaveNote(n, getActivity()))
-                                                Toast.makeText(getActivity(), R.string.wrong, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity(), R.string.couldnt_save, Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 })

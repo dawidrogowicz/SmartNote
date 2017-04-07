@@ -165,7 +165,7 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setWeightSum(8);
 
-        //Adding TextView with scrollView to new Layout
+        //Creating Text and Scroll Views
         final TextView textView = new TextView(getActivity());
         textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         textView.setTextSize(20);
@@ -176,7 +176,6 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
         params.gravity = Gravity.CENTER_VERTICAL;
         scrollView.setLayoutParams(params);
         scrollView.addView(textView);
-
         layout.addView(scrollView);
 
         //Adding CheckBox to layout
@@ -189,6 +188,21 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             checkBox.setChecked(false);
             textView.setPaintFlags(textView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
+        //add paint flag after text click
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBox.isChecked()) {
+                    checkBox.setChecked(false);
+                    textView.setPaintFlags(textView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                    checkbox_state_list.set(user_list.indexOf(text), false);
+                } else {
+                    checkBox.setChecked(true);
+                    textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    checkbox_state_list.set(user_list.indexOf(text), true);
+                }
+            }
+        });
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
