@@ -60,4 +60,8 @@
     <string name="External">External Storage</string>
     <string name="save_on_sd">Save your notes and read from SD card</string>
     <string name="theme">Theme</string>
+    <string name="notification_set">Notification set successfully</string>
+    <string name="set_date">Set date</string>
+    <string name="set_time">Set time</string>
+    <string name="enjoy_your_app">Enjoy your app!</string>
 </resources>

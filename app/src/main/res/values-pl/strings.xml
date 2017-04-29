@@ -60,4 +60,8 @@
     <string name="External">Pamięć zewnętrzna</string>
     <string name="save_on_sd">Zapisuj i czytaj notatki z karty pamięci</string>
     <string name="theme">Motyw</string>
+    <string name="notification_set">Notyfikacja ustawiona pomyślnie</string>
+    <string name="set_date">Ustaw datę</string>
+    <string name="set_time">Ustaw godzinę</string>
+    <string name="enjoy_your_app">Przyjemnego użytkowania!</string>
 </resources>

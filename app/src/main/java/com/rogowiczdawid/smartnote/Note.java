@@ -29,9 +29,18 @@ public class Note implements Serializable {
         if (creationDateTime == 0) creationDateTime = System.currentTimeMillis();
         editiondateTime = System.currentTimeMillis();
 
+        int items_added = 0;
+
         for (int i = 0; i < user_list.size(); i++) {
-            if (i > 3) break;
-            text += user_list.get(i).concat(" ");
+            if (items_added > 3)
+                break;
+            if (checkbox_state_list_arg.get(i))
+                continue;
+            text += "-" + user_list.get(i);
+            if (i < user_list.size() - 1)
+                if (!checkbox_state_list_arg.get(i + 1))
+                    text += "\n";
+            items_added++;
         }
     }
 

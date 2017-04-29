@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -16,8 +18,9 @@ public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Bundle extras = intent.getExtras();
-        String title = extras.getString("title");
+        String title = context.getString(R.string.app_name) + " " + extras.getString("title");
         String text = extras.getString("text");
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.sn_icon);
         int notificationId = extras.getInt("id");
 
         //Create PendingIntent leading to app's main activity
@@ -27,10 +30,11 @@ public class Receiver extends BroadcastReceiver {
         //Create notification
         Notification mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(R.string.app_name + title)
+                        .setSmallIcon(R.mipmap.sn_icon)
+                        .setContentTitle(title)
                         .setContentText(text)
                         .setContentIntent(pendingIntent)
+                        .setLargeIcon(largeIcon)
                         .build();
 
         //Make notification

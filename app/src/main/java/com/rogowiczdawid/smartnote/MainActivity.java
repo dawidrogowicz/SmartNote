@@ -393,15 +393,23 @@ public class MainActivity extends AppCompatActivity
         ToDoFragment toDoFragment = (ToDoFragment) getFragmentManager().findFragmentByTag(TODO);
         NoteFragment noteFragment = (NoteFragment) getFragmentManager().findFragmentByTag(NOTE);
         String text = "";
-        final String title;
-        int i = 0;
+        String title;
+        int items_added = 0;
         final int notificationId;
+        ArrayList<String> list = toDoFragment.getUserList();
 
         if (toDoFragment != null && toDoFragment.isVisible()) {
-            for (String s : toDoFragment.getUserList()) {
-                if (i > 3) break;
-                text += s.concat(" ");
-                i++;
+            for (int i = 0; i < list.size(); i++) {
+                if (items_added > 3)
+                    break;
+                if (toDoFragment.getCheckbox_state_list().get(i))
+                    continue;
+                text += list.get(i);
+                if (i < list.size() - 1)
+                    if (!toDoFragment.getCheckbox_state_list().get(i + 1))
+                        text += " | ";
+
+                items_added++;
             }
             title = toDoFragment.getTitleValue();
             notificationId = 666;
@@ -414,6 +422,7 @@ public class MainActivity extends AppCompatActivity
             notificationId = 999;
         } else return;
         final String finalText = text;
+        final String finalTitle = title;
 
         //Get date and time from user
         final int[] dateTime = new int[5];
@@ -428,9 +437,10 @@ public class MainActivity extends AppCompatActivity
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 dateTime[3] = i;
                 dateTime[4] = i1;
-                createNotification(dateTime, title, finalText, notificationId);
+                createNotification(dateTime, finalTitle, finalText, notificationId);
             }
         }, dateTime[3], dateTime[4], true);
+        timePickerDialog.setTitle(getString(R.string.set_time));
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -441,6 +451,7 @@ public class MainActivity extends AppCompatActivity
                 timePickerDialog.show();
             }
         }, dateTime[0], dateTime[1], dateTime[2]);
+        datePickerDialog.setTitle(getString(R.string.set_date));
 
         datePickerDialog.show();
     }
@@ -462,6 +473,8 @@ public class MainActivity extends AppCompatActivity
         //Set alarm that will send broadcast
         AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarm.set(SettingsFragment.alarm_type, calendar.getTimeInMillis(), pendingIntent);
+
+        Toast.makeText(this, R.string.notification_set, Toast.LENGTH_SHORT).show();
     }
 
     //////////////Google API//////////////
@@ -495,7 +508,7 @@ public class MainActivity extends AppCompatActivity
                         TextView mail = (TextView) findViewById(R.id.nav_user_mail);
                         mail.setText(R.string.sample_mail);
                         ImageView img = (ImageView) findViewById(R.id.nav_user_img);
-                        img.setImageResource(R.mipmap.ic_launcher);
+                        img.setImageResource(R.mipmap.sn_icon);
                     }
                 }
         );
@@ -515,6 +528,23 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+//    private Bitmap getImgBitmap(String argUrl){
+//        Bitmap bitmap = null;
+//        try{
+//            URL url = new URL(argUrl);
+//            URLConnection connection = url.openConnection();
+//            connection.connect();
+//            InputStream inputStream = connection.getInputStream();
+//            BufferedInputStream bis = new BufferedInputStream(inputStream);
+//            bitmap = BitmapFactory.decodeStream(bis);
+//            bis.close();
+//            inputStream.close();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        return bitmap;
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
